@@ -50,15 +50,6 @@ When you finally get `make sim` to finish, look for these three things to confir
 
 ---
 
-### Next Step
-
-Since the C++ compiler issue is a common Mac environment hurdle, let's make sure your **`cpu_top.sv`** is perfectly wired so that once the compiler works, the simulation doesn't crash.
-
-To build an **Audio SoC** from scratch, your project is organized into three main layers: **Hardware (RTL)**, **Software (Firmware)**, and **Verification (Tools)**.
-
-Here is every file in your `audio_soc` folder and the specific role it plays in the "Chain Reaction" of chip design.
-
----
 
 ## 1. The Hardware Layer (`rtl/`)
 
@@ -101,13 +92,6 @@ These files don't go onto the chip; they live on your **MacBook** to prove the c
 
 ---
 
-## The "Example Workflow" Visualized
-
-Let’s zoom in on that **Example Workflow**. When you design an SoC from scratch, you aren't just writing code; you are building a multi-layered machine where every file relies on the one before it.
-
-Think of it as building a **Digital Record Player**: The hardware is the turntable, the software is the record, and the simulation is the speakers that prove it works.
-
----
 
 ## 1. The Full Workflow Map
 

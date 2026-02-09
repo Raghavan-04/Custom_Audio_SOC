@@ -1,0 +1,28 @@
+# --- System / OS ---
+.DS_Store
+Thumbs.db
+
+# --- C / C++ ---
+*.o
+*.obj
+*.elf
+*.bin
+*.hex
+
+# --- FPGA Tools (Vivado Example) ---
+# Ignore the entire run directory but keep the source
+/build/
+*.log
+*.jou
+*.pb
+*.vdi
+.Xil/
+
+# --- Audio Testing ---
+# Keep your 'golden' samples, ignore large recordings
+/test_data/recordings/
+*.wav
+
+# --- Python (for DSP/Automation) ---
+__pycache__/
+.venv/

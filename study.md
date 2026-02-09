@@ -1,0 +1,167 @@
+
+
+### 1. The Audio SoC File Flow
+
+This chart shows how your source files are processed by the two different toolchains (**RISC-V GCC** for software and **Verilator** for hardware) to create the final simulation.
+
+| Folder | Role | Key File |
+| --- | --- | --- |
+| **`dv/firmware/`** | The "Software" | `start.S` (Assembly instructions) |
+| **`dv/hex/`** | The "Brain Food" | `firmware.hex` (Machine code for the CPU) |
+| **`rtl/core/`** | The "Brain" | `cpu_top.sv` (Coordinates the math and logic) |
+| **`rtl/peripherals/`** | The "Voice" | `audio_pwm.sv` (Converts numbers to electrical pulses) |
+| **`obj_dir/`** | The "Simulator" | `Vaudio_soc_top` (The executable produced by Verilator) |
+
+---
+
+### 2. Example: How a "Play Sound" Command Works
+
+Let's trace exactly what happens when your assembly code runs the instruction: `sw t1, 0(t0)` (Store the value `0xFF` to address `0x400`).
+
+#### **Step A: The Software (Software Layer)**
+
+1. Your `start.S` contains: `li t1, 0xFF` and `sw t1, 0(t0)`.
+2. GCC converts this into hex: `0xff028023`.
+3. This hex code is stored in `firmware.hex`.
+
+#### **Step B: The Hardware (RTL Layer)**
+
+1. **Fetch:** The `pc.sv` sends address `0x0` to `instr_mem.sv`. It returns `0xff028023`.
+2. **Decode:** `decoder.sv` sees the `opcode` for a "Store" and the `data` `0xFF`.
+3. **Control:** `control_unit.sv` sees the address is `0x400` and sets `mem_we` (Write Enable) to **High**.
+4. **Execute:** The `cpu_top.sv` places `0xFF` on the data bus.
+
+#### **Step C: The Peripheral (Output Layer)**
+
+1. `audio_pwm.sv` sees `we_i` is High and the address is its own (`0x400`).
+2. It saves `0xFF` into its internal `sample_reg`.
+3. The PWM counter starts. Since `sample_reg` is maxed out at `0xFF`, the `audio_out_pin` stays **High** for the entire cycle.
+4. **Result:** You see a solid line at 3.3V (digital High) in **GTKWave**.
+
+---
+
+### 3. Verification Checklist (What to check in GTKWave)
+
+When you finally get `make sim` to finish, look for these three things to confirm your "from scratch" design works:
+
+1. **`pc_curr`**: Does it increment ()? If it stays at , your clock or reset logic is broken.
+2. **`instr`**: Does it match the values in your `firmware.hex`?
+3. **`audio_out_pin`**: Does it toggle when the CPU reaches the `sw` (Store Word) instruction?
+
+---
+
+### Next Step
+
+Since the C++ compiler issue is a common Mac environment hurdle, let's make sure your **`cpu_top.sv`** is perfectly wired so that once the compiler works, the simulation doesn't crash.
+
+To build an **Audio SoC** from scratch, your project is organized into three main layers: **Hardware (RTL)**, **Software (Firmware)**, and **Verification (Tools)**.
+
+Here is every file in your `audio_soc` folder and the specific role it plays in the "Chain Reaction" of chip design.
+
+---
+
+## 1. The Hardware Layer (`rtl/`)
+
+These files define the actual physical logic (the "Silicon") of your chip.
+
+| File | Purpose | Why it’s used |
+| --- | --- | --- |
+| **`audio_soc_top.sv`** | **The Motherboard** | The master file that "plugs in" the CPU, the Memory, and the Audio hardware. It defines the physical pins of the chip. |
+| **`core/cpu_top.sv`** | **The Brain Hub** | Coordinates the internal CPU signals. It connects the ALU, Register File, and Decoder together. |
+| **`core/alu.sv`** | **The Calculator** | Performs all math. For an audio chip, this is used for volume scaling and calculating signal filters. |
+| **`core/decoder.sv`** | **The Translator** | Slices the 32-bit instruction into pieces so the CPU knows which registers to use. |
+| **`core/control_unit.sv`** | **The Manager** | Decides if a command is a "Read," a "Write," or a "Math" operation. It tells the Audio peripheral when to listen. |
+| **`core/regfile.sv`** | **The Workspace** | Fast internal storage for the CPU to keep its current audio samples ( through ). |
+| **`core/pc.sv`** | **The Pointer** | Tracks the address of the next instruction to execute. Without this, the CPU wouldn't know where to go next. |
+| **`peripherals/audio_pwm.sv`** | **The Voice** | Converts digital numbers (0–255) into a Pulse Width Modulated signal that moves a speaker. |
+| **`memory/instr_mem.sv`** | **The Library** | Holds the compiled code. The CPU "reads" from this file to know what to do. |
+
+---
+
+## 2. The Software Layer (`dv/firmware/`)
+
+These files are the "Instructions" you give to the hardware. Hardware without software is just dead silicon.
+
+| File | Purpose | Why it’s used |
+| --- | --- | --- |
+| **`start.S`** | **The First Words** | Assembly code that runs the moment the chip wakes up. It tells the CPU: "Look at the Audio address and play a sound." |
+| **`firmware.hex`** | **Machine Code** | A text file containing the binary 0s and 1s of your assembly code. This is what the Verilog `instr_mem.sv` actually reads. |
+
+---
+
+## 3. The Verification Layer (`dv/` and Root)
+
+These files don't go onto the chip; they live on your **MacBook** to prove the chip works before you manufacture it.
+
+| File | Purpose | Why it’s used |
+| --- | --- | --- |
+| **`tb_audio_soc.cpp`** | **The Virtual World** | A C++ file that acts as the physical environment. It toggles the clock, releases the reset, and records the results. |
+| **`Makefile`** | **The Architect** | Automates the entire process. Instead of typing 50 commands, you just type `make sim`. |
+| **`waveform.vcd`** | **The Recording** | A digital "tape" of the simulation. You open this in **GTKWave** to see the signals moving over time. |
+
+---
+
+## The "Example Workflow" Visualized
+
+Let’s zoom in on that **Example Workflow**. When you design an SoC from scratch, you aren't just writing code; you are building a multi-layered machine where every file relies on the one before it.
+
+Think of it as building a **Digital Record Player**: The hardware is the turntable, the software is the record, and the simulation is the speakers that prove it works.
+
+---
+
+## 1. The Full Workflow Map
+
+This diagram shows the journey from your keyboard to the "silicon" gates on your Mac.
+
+---
+
+## 2. Step-by-Step Breakdown
+
+### Phase A: The "Song" (Firmware/Software)
+
+* **File:** `dv/firmware/start.S` (Assembly)
+* **What happens:** You write a command: `sw t1, 0(t0)`. This tells the CPU to take the volume level in register `t1` and push it out to the "Audio Address" stored in `t0`.
+* **The Conversion:** You run `riscv64-unknown-elf-gcc`. It translates your human-readable "Play" command into a machine-readable `.hex` file.
+
+### Phase B: The "Brain" (CPU RTL)
+
+* **Files:** `rtl/core/decoder.sv`, `alu.sv`, `control_unit.sv`
+* **What happens:** The CPU reads a 32-bit number from the `.hex` file.
+1. The **Decoder** slices that number to see it's a "Store" command.
+2. The **Control Unit** sets the "Write Enable" wire to **High**.
+3. The **ALU** calculates the target address (0x400).
+
+
+* **The Result:** A electrical "Write" pulse travels across the internal bus.
+
+### Phase C: The "Instrument" (Audio Peripheral)
+
+* **File:** `rtl/peripherals/audio_pwm.sv`
+* **What happens:** The Audio PWM module is "listening" to the bus. When it sees its address (0x400) and the "Write Enable" signal is High, it catches the data (volume) and saves it.
+* **The Transformation:** An internal counter in the PWM module starts counting from 0 to 255. It compares the counter to the saved volume to decide when the physical `audio_out` pin should be 1 (Up) or 0 (Down).
+
+### Phase D: The "Proof" (Simulation)
+
+* **File:** `dv/tb_audio_soc.cpp` (C++ Testbench)
+* **What happens:** Since we don't have a physical chip yet, your Mac builds a "Digital Twin" of the SoC.
+1. **Verilator** turns your Verilog into a high-speed C++ model.
+2. The **Testbench** provides the "Batteries" (Clock and Reset).
+3. **GTKWave** displays the recording (`waveform.vcd`).
+
+
+
+---
+
+## 3. How Data Flows Through the Files
+
+| Data State | File Source | Tool Used | Output |
+| --- | --- | --- | --- |
+| **Logic Idea** | `top_soc.sv` | Text Editor | Source Code |
+| **Instruction** | `start.S` | `riscv-gcc` | `firmware.hex` |
+| **Clock/Reset** | `tb_audio_soc.cpp` | `verilator` | C++ Simulator |
+| **Execution** | `obj_dir/Vtop` | `./Vtop` | `waveform.vcd` |
+
+---
+
+
+

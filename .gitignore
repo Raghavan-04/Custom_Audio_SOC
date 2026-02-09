@@ -3,12 +3,12 @@
 Thumbs.db
 
 # --- C / C++ ---
+obj_dir/
+waveform.vcd
 *.o
-*.obj
 *.elf
 *.bin
 *.hex
-
 # --- FPGA Tools (Vivado Example) ---
 # Ignore the entire run directory but keep the source
 /build/

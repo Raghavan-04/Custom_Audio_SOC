@@ -164,4 +164,60 @@ This diagram shows the journey from your keyboard to the "silicon" gates on your
 ---
 
 
+## Path 1: Enhancing the Hardware (The "Pro" SoC)  <--- Current
+
+To make this a real-world audio processor, we need to solve the biggest bottleneck: the CPU is currently too busy "manually" managing every single pulse.
+
+### 1.1 Add a Timer Interrupt
+
+Right now, your CPU has to "guess" when to send the next audio sample using delay loops.
+
+* **The Upgrade:** Build a hardware timer that sends an **Interrupt Signal** to the CPU exactly every 22 microseconds (for 44.1kHz audio).
+* **The Benefit:** This lets the CPU do other math (like calculating an echo or reverb) and only jump to the audio code when it's exactly time to play a sound.
+
+### 1.2 Multiplier Hardware (RV32M)
+
+Your current ALU only adds and subtracts. To do audio volume mixing or filters (EQ), you need to multiply signals.
+
+* **The Upgrade:** Implement a **Hardware Multiplier** block in your ALU.
+* **The Benefit:** Instead of taking 32 clock cycles to multiply two numbers in software, the hardware can do it in **1 cycle**.
+
+---
+
+## Path 2: Physical Design (The "Silicon" Path)
+
+This is where we take your SystemVerilog code and see how it looks as a physical chip using the **OpenLane** flow.
+
+### 2.1 Logic Synthesis
+
+We use a tool (like Yosys) to turn your "if/else" code into a "Netlist" of actual logic gates (NAND, NOR, Flip-Flops) from a real foundry like **SkyWater 130nm**.
+
+### 2.2 Floorplanning & Routing
+
+We decide where the CPU sits on the silicon die versus where the Audio PWM sits. We then let the computer "draw" the tiny copper wires that connect them.
+
+* **Goal:** Calculate the **Power, Performance, and Area (PPA)**. You'll be able to say, "My Audio SoC takes up 0.5  and uses 10mW of power."
+
+---
+
+## Path 3: Advanced Audio (The "Musician" Path)
+
+### 3.1 Wavetable Synthesis
+
+Instead of just a square wave (beep-boop), we can add a small **SRAM Data Memory** to store a "lookup table" of a real violin or piano wave.
+
+* **The Upgrade:** Modify `audio_soc_top.sv` to include a 1KB Data SRAM.
+
+---
+
+## Roadmap Summary
+
+| Phase | Goal | Key Task |
+| --- | --- | --- |
+| **Expansion** | Better Performance | Add Hardware Multiplier (RV32M) |
+| **Control** | Precise Timing | Implement Timer Interrupts |
+| **Silicon** | Physical Chip | Run the OpenLane RTL-to-GDSII flow |
+| **Software** | Better Sound | Write a C-based Wavetable Synthesizer |
+
+
 

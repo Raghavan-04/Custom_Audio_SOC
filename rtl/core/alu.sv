@@ -10,6 +10,7 @@ module alu (
             4'b0001: result = a | b;      // OR
             4'b0010: result = a + b;      // ADD
             4'b0110: result = a - b;      // SUB
+            4'b1000: result = a * b;      // MUL
             4'b0111: result = (a < b) ? 1 : 0; // SLT
             default: result = 32'b0;
         endcase

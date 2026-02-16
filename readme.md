@@ -1,8 +1,6 @@
-
-
 ### 1. The Audio SoC File Flow
 
-This chart shows how your source files are processed by the two different toolchains (**RISC-V GCC** for software and **Verilator** for hardware) to create the final simulation.
+This chart shows how source files are processed by the two different toolchains (**RISC-V GCC** for software and **Verilator** for hardware) to create the final simulation.
 
 | Folder | Role | Key File |
 | --- | --- | --- |
@@ -16,11 +14,11 @@ This chart shows how your source files are processed by the two different toolch
 
 ### 2. Example: How a "Play Sound" Command Works
 
-Let's trace exactly what happens when your assembly code runs the instruction: `sw t1, 0(t0)` (Store the value `0xFF` to address `0x400`).
+Let's trace exactly what happens when the assembly code runs the instruction: `sw t1, 0(t0)` (Store the value `0xFF` to address `0x400`).
 
 #### **Step A: The Software (Software Layer)**
 
-1. Your `start.S` contains: `li t1, 0xFF` and `sw t1, 0(t0)`.
+1. The `start.S` contains: `li t1, 0xFF` and `sw t1, 0(t0)`.
 2. GCC converts this into hex: `0xff028023`.
 3. This hex code is stored in `firmware.hex`.
 
@@ -36,42 +34,33 @@ Let's trace exactly what happens when your assembly code runs the instruction: `
 1. `audio_pwm.sv` sees `we_i` is High and the address is its own (`0x400`).
 2. It saves `0xFF` into its internal `sample_reg`.
 3. The PWM counter starts. Since `sample_reg` is maxed out at `0xFF`, the `audio_out_pin` stays **High** for the entire cycle.
-4. **Result:** You see a solid line at 3.3V (digital High) in **GTKWave**.
+4. **Result:** A solid line at 3.3V (digital High) is visible in **GTKWave**.
 
 ---
 
 ### 3. Verification Checklist (What to check in GTKWave)
 
-When you finally get `make sim` to finish, look for these three things to confirm your "from scratch" design works:
+When `make sim` finishes, look for these three things to confirm the "from scratch" design works:
 
-1. **`pc_curr`**: Does it increment ()? If it stays at , your clock or reset logic is broken.
-2. **`instr`**: Does it match the values in your `firmware.hex`?
+1. **`pc_curr`**: Does it increment? If it stays at 0, the clock or reset logic is broken.
+2. **`instr`**: Does it match the values in `firmware.hex`?
 3. **`audio_out_pin`**: Does it toggle when the CPU reaches the `sw` (Store Word) instruction?
 
----
-
-### Next Step
-
-Since the C++ compiler issue is a common Mac environment hurdle, let's make sure your **`cpu_top.sv`** is perfectly wired so that once the compiler works, the simulation doesn't crash.
-
-To build an **Audio SoC** from scratch, your project is organized into three main layers: **Hardware (RTL)**, **Software (Firmware)**, and **Verification (Tools)**.
-
-Here is every file in your `audio_soc` folder and the specific role it plays in the "Chain Reaction" of chip design.
 
 ---
 
 ## 1. The Hardware Layer (`rtl/`)
 
-These files define the actual physical logic (the "Silicon") of your chip.
+These files define the actual physical logic (the "Silicon") of the chip.
 
-| File | Purpose | Why it’s used |
+| File | Purpose | Why it's used |
 | --- | --- | --- |
 | **`audio_soc_top.sv`** | **The Motherboard** | The master file that "plugs in" the CPU, the Memory, and the Audio hardware. It defines the physical pins of the chip. |
 | **`core/cpu_top.sv`** | **The Brain Hub** | Coordinates the internal CPU signals. It connects the ALU, Register File, and Decoder together. |
 | **`core/alu.sv`** | **The Calculator** | Performs all math. For an audio chip, this is used for volume scaling and calculating signal filters. |
 | **`core/decoder.sv`** | **The Translator** | Slices the 32-bit instruction into pieces so the CPU knows which registers to use. |
 | **`core/control_unit.sv`** | **The Manager** | Decides if a command is a "Read," a "Write," or a "Math" operation. It tells the Audio peripheral when to listen. |
-| **`core/regfile.sv`** | **The Workspace** | Fast internal storage for the CPU to keep its current audio samples ( through ). |
+| **`core/regfile.sv`** | **The Workspace** | Fast internal storage for the CPU to keep its current audio samples. |
 | **`core/pc.sv`** | **The Pointer** | Tracks the address of the next instruction to execute. Without this, the CPU wouldn't know where to go next. |
 | **`peripherals/audio_pwm.sv`** | **The Voice** | Converts digital numbers (0–255) into a Pulse Width Modulated signal that moves a speaker. |
 | **`memory/instr_mem.sv`** | **The Library** | Holds the compiled code. The CPU "reads" from this file to know what to do. |
@@ -80,30 +69,30 @@ These files define the actual physical logic (the "Silicon") of your chip.
 
 ## 2. The Software Layer (`dv/firmware/`)
 
-These files are the "Instructions" you give to the hardware. Hardware without software is just dead silicon.
+These files are the "Instructions" given to the hardware. Hardware without software is just dead silicon.
 
-| File | Purpose | Why it’s used |
+| File | Purpose | Why it's used |
 | --- | --- | --- |
 | **`start.S`** | **The First Words** | Assembly code that runs the moment the chip wakes up. It tells the CPU: "Look at the Audio address and play a sound." |
-| **`firmware.hex`** | **Machine Code** | A text file containing the binary 0s and 1s of your assembly code. This is what the Verilog `instr_mem.sv` actually reads. |
+| **`firmware.hex`** | **Machine Code** | A text file containing the binary 0s and 1s of the assembly code. This is what the Verilog `instr_mem.sv` actually reads. |
 
 ---
 
 ## 3. The Verification Layer (`dv/` and Root)
 
-These files don't go onto the chip; they live on your **MacBook** to prove the chip works before you manufacture it.
+These files don't go onto the chip; they live on the **development machine** to prove the chip works before manufacturing it.
 
-| File | Purpose | Why it’s used |
+| File | Purpose | Why it's used |
 | --- | --- | --- |
 | **`tb_audio_soc.cpp`** | **The Virtual World** | A C++ file that acts as the physical environment. It toggles the clock, releases the reset, and records the results. |
-| **`Makefile`** | **The Architect** | Automates the entire process. Instead of typing 50 commands, you just type `make sim`. |
-| **`waveform.vcd`** | **The Recording** | A digital "tape" of the simulation. You open this in **GTKWave** to see the signals moving over time. |
+| **`Makefile`** | **The Architect** | Automates the entire process. Instead of typing 50 commands, just type `make sim`. |
+| **`waveform.vcd`** | **The Recording** | A digital "tape" of the simulation. This is opened in **GTKWave** to see the signals moving over time. |
 
 ---
 
 ## The "Example Workflow" Visualized
 
-Let’s zoom in on that **Example Workflow**. When you design an SoC from scratch, you aren't just writing code; you are building a multi-layered machine where every file relies on the one before it.
+Let's zoom in on that **Example Workflow**. When designing an SoC from scratch, this isn't just writing code; this is building a multi-layered machine where every file relies on the one before it.
 
 Think of it as building a **Digital Record Player**: The hardware is the turntable, the software is the record, and the simulation is the speakers that prove it works.
 
@@ -111,7 +100,7 @@ Think of it as building a **Digital Record Player**: The hardware is the turntab
 
 ## 1. The Full Workflow Map
 
-This diagram shows the journey from your keyboard to the "silicon" gates on your Mac.
+This diagram shows the journey from the keyboard to the "silicon" gates on the development machine.
 
 ---
 
@@ -120,8 +109,8 @@ This diagram shows the journey from your keyboard to the "silicon" gates on your
 ### Phase A: The "Song" (Firmware/Software)
 
 * **File:** `dv/firmware/start.S` (Assembly)
-* **What happens:** You write a command: `sw t1, 0(t0)`. This tells the CPU to take the volume level in register `t1` and push it out to the "Audio Address" stored in `t0`.
-* **The Conversion:** You run `riscv64-unknown-elf-gcc`. It translates your human-readable "Play" command into a machine-readable `.hex` file.
+* **What happens:** The command is written: `sw t1, 0(t0)`. This tells the CPU to take the volume level in register `t1` and push it out to the "Audio Address" stored in `t0`.
+* **The Conversion:** Running `riscv64-unknown-elf-gcc` translates the human-readable "Play" command into a machine-readable `.hex` file.
 
 ### Phase B: The "Brain" (CPU RTL)
 
@@ -132,7 +121,7 @@ This diagram shows the journey from your keyboard to the "silicon" gates on your
 3. The **ALU** calculates the target address (0x400).
 
 
-* **The Result:** A electrical "Write" pulse travels across the internal bus.
+* **The Result:** An electrical "Write" pulse travels across the internal bus.
 
 ### Phase C: The "Instrument" (Audio Peripheral)
 
@@ -143,8 +132,8 @@ This diagram shows the journey from your keyboard to the "silicon" gates on your
 ### Phase D: The "Proof" (Simulation)
 
 * **File:** `dv/tb_audio_soc.cpp` (C++ Testbench)
-* **What happens:** Since we don't have a physical chip yet, your Mac builds a "Digital Twin" of the SoC.
-1. **Verilator** turns your Verilog into a high-speed C++ model.
+* **What happens:** Since there is no physical chip yet, the development machine builds a "Digital Twin" of the SoC.
+1. **Verilator** turns the Verilog into a high-speed C++ model.
 2. The **Testbench** provides the "Batteries" (Clock and Reset).
 3. **GTKWave** displays the recording (`waveform.vcd`).
 
@@ -162,42 +151,42 @@ This diagram shows the journey from your keyboard to the "silicon" gates on your
 | **Execution** | `obj_dir/Vtop` | `./Vtop` | `waveform.vcd` |
 
 ---
-Since you’ve successfully built the "Brain" (CPU) and the "Voice" (Audio PWM) and verified them in simulation, the next steps involve turning this project into a more powerful and "manufacturable" system.
+Since the "Brain" (CPU) and the "Voice" (Audio PWM) have been successfully built and verified in simulation, the next steps involve turning this project into a more powerful and "manufacturable" system.
 
-We can take two distinct paths: **Enhancing the Hardware (Front-End)** or **Moving to Silicon (Back-End)**.
+Two distinct paths can be taken: **Enhancing the Hardware (Front-End)** or **Moving to Silicon (Back-End)**.
 
 ---
 
 
 ### 1.1 Add a Timer Interrupt
 
-Right now, your CPU has to "guess" when to send the next audio sample using delay loops.
+Right now, the CPU has to "guess" when to send the next audio sample using delay loops.
 
 * **The Upgrade:** Build a hardware timer that sends an **Interrupt Signal** to the CPU exactly every 22 microseconds (for 44.1kHz audio).
 * **The Benefit:** This lets the CPU do other math (like calculating an echo or reverb) and only jump to the audio code when it's exactly time to play a sound.
 
 ### 1.2 Multiplier Hardware (RV32M)  <----Current
 
-Your current ALU only adds and subtracts. To do audio volume mixing or filters (EQ), you need to multiply signals.
+The current ALU only adds and subtracts. To do audio volume mixing or filters (EQ), multiplication of signals is needed.
 
-* **The Upgrade:** Implement a **Hardware Multiplier** block in your ALU.
+* **The Upgrade:** Implement a **Hardware Multiplier** block in the ALU.
 * **The Benefit:** Instead of taking 32 clock cycles to multiply two numbers in software, the hardware can do it in **1 cycle**.
 
 ---
 
 ## Path 2: Physical Design (The "Silicon" Path)
 
-This is where we take your SystemVerilog code and see how it looks as a physical chip using the **OpenLane** flow.
+This is where the SystemVerilog code is taken to see how it looks as a physical chip using the **OpenLane** flow.
 
 ### 2.1 Logic Synthesis
 
-We use a tool (like Yosys) to turn your "if/else" code into a "Netlist" of actual logic gates (NAND, NOR, Flip-Flops) from a real foundry like **SkyWater 130nm**.
+A tool (like Yosys) is used to turn the "if/else" code into a "Netlist" of actual logic gates (NAND, NOR, Flip-Flops) from a real foundry like **SkyWater 130nm**.
 
 ### 2.2 Floorplanning & Routing
 
-We decide where the CPU sits on the silicon die versus where the Audio PWM sits. We then let the computer "draw" the tiny copper wires that connect them.
+The decision is made where the CPU sits on the silicon die versus where the Audio PWM sits. The computer then "draws" the tiny copper wires that connect them.
 
-* **Goal:** Calculate the **Power, Performance, and Area (PPA)**. You'll be able to say, "My Audio SoC takes up 0.5  and uses 10mW of power."
+* **Goal:** Calculate the **Power, Performance, and Area (PPA)**. It will be possible to say, "This Audio SoC takes up 0.5 mm² and uses 10mW of power."
 
 ---
 
@@ -205,7 +194,7 @@ We decide where the CPU sits on the silicon die versus where the Audio PWM sits.
 
 ### 3.1 Wavetable Synthesis
 
-Instead of just a square wave (beep-boop), we can add a small **SRAM Data Memory** to store a "lookup table" of a real violin or piano wave.
+Instead of just a square wave (beep-boop), a small **SRAM Data Memory** can be added to store a "lookup table" of a real violin or piano wave.
 
 * **The Upgrade:** Modify `audio_soc_top.sv` to include a 1KB Data SRAM.
 
@@ -221,6 +210,3 @@ Instead of just a square wave (beep-boop), we can add a small **SRAM Data Memory
 | **Software** | Better Sound | Write a C-based Wavetable Synthesizer |
 
 ---
-
-
-

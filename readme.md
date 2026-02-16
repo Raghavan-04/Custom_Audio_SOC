@@ -90,13 +90,6 @@ These files don't go onto the chip; they live on the **development machine** to 
 
 ---
 
-## The "Example Workflow" Visualized
-
-Let's zoom in on that **Example Workflow**. When designing an SoC from scratch, this isn't just writing code; this is building a multi-layered machine where every file relies on the one before it.
-
-Think of it as building a **Digital Record Player**: The hardware is the turntable, the software is the record, and the simulation is the speakers that prove it works.
-
----
 
 ## 1. The Full Workflow Map
 
@@ -156,7 +149,14 @@ Since the "Brain" (CPU) and the "Voice" (Audio PWM) have been successfully built
 Two distinct paths can be taken: **Enhancing the Hardware (Front-End)** or **Moving to Silicon (Back-End)**.
 
 ---
+### 0->1 : The Foundation (Baseline RV32I)
+Began by building the core "brain" of the system—a Single-Cycle RISC-V Processor based on the RV32I instruction set.
 
+* **CPU Architecture:** Designed the fundamental logic blocks including the ALU (Arithmetic Logic Unit), Register File (32 general-purpose registers), and Control Unit.
+
+* **Instruction Handling:** Implemented the logic to fetch, decode, and execute basic 32-bit instructions from memory.
+
+* **Single-Cycle Determinism:** Chose a single-cycle design specifically to ensure every instruction takes exactly one clock cycle, which is the cornerstone of predictable audio timing.
 
 ### 1.1 Add a Timer Interrupt
 

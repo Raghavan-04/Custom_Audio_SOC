@@ -25,6 +25,6 @@ You might wonder why we don't just send the number directly to a speaker. Digita
 **Refer In output/6.Hardware_Multiplication_Verification.png**
 
 1. **The CPU** finishes its multiplication and writes `0xFE` to memory.
-2. **The `audio_pwm**` sees that `0xFE` and sets the `audio_pwm_o` signal to stay HIGH for almost the entire counter cycle.
+2. The `audio_pwm**` sees that `0xFE` and sets the `audio_pwm_o` signal to stay HIGH for almost the entire counter cycle.
 3. **The Result:** If you were to plug a real speaker (with a simple filter) into that pin, you would hear a loud, clear audio tone.
 

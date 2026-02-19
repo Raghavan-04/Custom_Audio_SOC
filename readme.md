@@ -165,12 +165,46 @@ Right now, the CPU has to "guess" when to send the next audio sample using delay
 * **The Upgrade:** Build a hardware timer that sends an **Interrupt Signal** to the CPU exactly every 22 microseconds (for 44.1kHz audio).
 * **The Benefit:** This lets the CPU do other math (like calculating an echo or reverb) and only jump to the audio code when it's exactly time to play a sound.
 
-### 1.2 Multiplier Hardware (RV32M)  <----Current
+### 1.2 Multiplier Hardware (RV32M) 
 
 The current ALU only adds and subtracts. To do audio volume mixing or filters (EQ), multiplication of signals is needed.
 
 * **The Upgrade:** Implement a **Hardware Multiplier** block in the ALU.
 * **The Benefit:** Instead of taking 32 clock cycles to multiply two numbers in software, the hardware can do it in **1 cycle**.
+
+
+### 1.3 System Integration & Verification
+This section describes how the "Manager" (Control Unit), "Machines" (ALU), and "Peripherals" (Timer/PWM) were brought together.
+
+
+* **SoC Top-Level Integration:** Orchestrated the physical wiring in `audio_soc_top.sv` to map the Audio PWM to address `0x400` and the Timer to `0x500`, creating a Memory-Mapped I/O (MMIO) interface.
+* **ALU Decoding Logic:** Implemented an auxiliary decoding layer in `cpu_top.sv` to detect the `M-extension` signature (`funct7 == 7'b0000001`), allowing the processor to distinguish between standard addition and the new hardware multiplication.
+* **Interrupt Vectoring:** Programmed the Program Counter (PC) to perform a hardware-forced jump to address `0x20` upon receiving a high `irq_signal` from the timer.
+
+---
+
+### 1.4 Hardware Multiplication Verification <----Current
+
+
+* **Test Methodology:** Developed a bare-metal assembly firmware (`start.S`) that utilizes the `mul` instruction within an Interrupt Service Routine (ISR) to scale audio samples in real-time.
+* **Waveform Analysis:** Confirmed via GTKWave that the `alu_result` signal correctly computes the volume-scaled product () within a single clock cycle immediately following a timer trigger at counter value `0x0c`.
+* **Deterministic Performance:** Verified that the transition from software-based multiplication loops to the hardware multiplier reduced the audio processing latency by approximately 31 clock cycles per sample.
+* This is where explanation for  the "Hardware Multiplication" image .
+
+
+---
+
+### Updated Key Results
+
+
+| Metric | Achievement |
+| --- | --- |
+| **Instruction Set** | Upgraded from RV32I to **RV32IM** (Integer + Multiplication). |
+| **Math Efficiency** | Multiplication latency reduced from **32 cycles** to **1 cycle**. |
+| **Audio Fidelity** | Achieved jitter-free **44.1kHz** sample delivery via hardware interrupts. |
+| **SoC Interface** | Implemented functional **MMIO** for Audio PWM and Timer peripherals. |
+
+
 
 ---
 

@@ -94,7 +94,8 @@ Instead of just a square wave (beep-boop), a small **SRAM Data Memory** can be a
 | **Silicon** | Physical Chip | Run the OpenLane RTL-to-GDSII flow |
 | **Software** | Better Sound | Write a C-based Wavetable Synthesizer |
 
----### 1. The Audio SoC File Flow
+---
+### 1. The Audio SoC File Flow
 
 This chart shows how source files are processed by the two different toolchains (**RISC-V GCC** for software and **Verilator** for hardware) to create the final simulation.
 

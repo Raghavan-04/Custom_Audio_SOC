@@ -147,4 +147,3 @@ For further details, read **readme_v1.md** file to know more.
 
 ---
 
-**Next Step:** Would you like me to help you generate the **Verilog/SystemVerilog code** for the `audio_soc_top.sv` module to ensure your MMIO bus logic is correctly mapped?

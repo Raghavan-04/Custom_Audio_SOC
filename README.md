@@ -81,3 +81,4 @@ make sim
 This command compiles the RISC-V assembly, generates the machine code hex, builds the Verilator model, and runs the simulation to produce `waveform.vcd`.
 
 ---
+###For further details, read **readme_v1.md** file to know more

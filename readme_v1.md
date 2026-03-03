@@ -16,6 +16,7 @@
 
 ---
 
+## ⏳Timeline
 
 ### 0->1 : The Foundation (Baseline RV32I)
 Began by building the core "brain" of the system—a Single-Cycle RISC-V Processor based on the RV32I instruction set.

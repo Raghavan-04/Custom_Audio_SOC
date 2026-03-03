@@ -23,6 +23,31 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 | **I/O Mapping** | **MMIO** | Audio PWM (`0x400`), Timer (`0x500`) |
 | **Verification** | **Verilator** | Cycle-accurate RTL simulation with GTKWave |
 
++--------------------------------------------------------------------------+
+|                          AUDIO SoC TOP-LEVEL (audio_soc_top.sv)          |
+|                                                                          |
+|  +---------------------------+          +-----------------------------+  |
+|  |       RISC-V CPU CORE     |          |       INSTRUCTION MEMORY    |  |
+|  |       (cpu_top.sv)        | <======> |       (instr_mem.sv)        |  |
+|  |                           |  Bus     |      [Firmware.hex]         |  |
+|  |  +---------------------+  |          +-----------------------------+  |
+|  |  |   Control Unit      |  |                                           |
+|  |  | (RV32IM Decoder)    |  |          +-----------------------------+  |
+|  |  +----------+----------+  |          |        DATA MEMORY /        |  |
+|  |             |             | <======> |     PERIPHERAL INTERFACE    |  |
+|  |  +----------v----------+  |  MMIO    |      (Memory Mapped I/O)    |  |
+|  |  |  Hardware Multiplier|  |  Bus     +--------------+--------------+  |
+|  |  |  (1-Cycle Math)     |  |                         |                 |
+|  |  +----------+----------+  |             +-----------+-----------+     |
+|  |             |             |             |                       |     |
+|  |  +----------v----------+  |      +------v-------+        +------v------+
+|  |  |  ALU / RegFile      |  |      | TIMER MODULE |        |  AUDIO PWM  |
+|  |  | (32x Registers)     |  |      |  (timer.sv)  |        | (audio_pwm.v)|
+|  |  +----------^----------+  |      +------+-------+        +------+------+
+|  +-------------|-------------+             |                       |     |
+|                |                           |                       |     |
+|      [ IRQ Signal (22us) ] <---------------+                [ Audio Out ]|
++--------------------------------------------------------------------------+
 ---
 
 ## 🛠️ System Architecture

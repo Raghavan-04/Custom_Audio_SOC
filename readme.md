@@ -1,4 +1,21 @@
-### TIMELINE (in progress)
+
+# 🚀 RV32IM Audio SoC
+
+**A custom RISC-V System-on-Chip (SoC) optimized for real-time, jitter-free audio processing.**
+
+## 📑 System Specifications
+
+| Feature | Specification | Technical Implementation |
+| --- | --- | --- |
+| **ISA Support** | **RV32IM** | Full RV32I Base + M-Extension (Hardware Multiplication) |
+| **Core Architecture** | **Single-Cycle Deterministic** | Every instruction executes in 1 clock cycle (CPI = 1.0) |
+| **Math Performance** | **1-Cycle Multiplication** | Dedicated ALU hardware reduces math latency from ~32 cycles to 1 |
+| **Audio Timing** | **44.1 kHz Stable** | Hardware Timer Interrupts (IRQ) at 22μs intervals for zero-jitter |
+| **Peripheral Access** | **MMIO** | Memory-Mapped I/O for Audio PWM (0x400) and Timer (0x500) |
+| **Verification** | **Cycle-Accurate Sim** | RTL verified via Verilator & GTKWave for nanosecond precision |
+
+---
+
 
 ### 0->1 : The Foundation (Baseline RV32I)
 Began by building the core "brain" of the system—a Single-Cycle RISC-V Processor based on the RV32I instruction set.

@@ -12,6 +12,47 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 * **Silicon Ready:** RTL designed for the **OpenLane** (SkyWater 130nm) physical design flow.
 
 ---
+## **System-on-Chip (SoC) Architectural Block Diagram**
+
+```text
+
++--------------------------------------------------------------------------+
+|                          AUDIO SoC TOP-LEVEL (audio_soc_top.sv)          |
+|                                                                          |
+|  +---------------------------+          +-----------------------------+  |
+|  |       RISC-V CPU CORE     |          |       INSTRUCTION MEMORY    |  |
+|  |       (cpu_top.sv)        | <======> |       (instr_mem.sv)        |  |
+|  |                           |  Bus     |      [Firmware.hex]         |  |
+|  |  +---------------------+  |          +-----------------------------+  |
+|  |  |   Control Unit      |  |                                           |
+|  |  | (RV32IM Decoder)    |  |          +-----------------------------+  |
+|  |  +----------+----------+  |          |        DATA MEMORY /        |  |
+|  |             |             | <======> |     PERIPHERAL INTERFACE    |  |
+|  |  +----------v----------+  |  MMIO    |      (Memory Mapped I/O)    |  |
+|  |  |  Hardware Multiplier|  |  Bus     +--------------+--------------+  |
+|  |  |  (1-Cycle Math)     |  |                         |                 |
+|  |  +----------+----------+  |             +-----------+-----------+     |
+|  |             |             |             |                       |     |
+|  |  +----------v----------+  |      +------v-------+        +------v------+
+|  |  |  ALU / RegFile      |  |      | TIMER MODULE |        |  AUDIO PWM  |
+|  |  | (32x Registers)     |  |      |  (timer.sv)  |        | (audio_pwm.v)|
+|  |  +----------^----------+  |      +------+-------+        +------+------+
+|  +-------------|-------------+             |                       |     |
+|                |                           |                       |     |
+|      [ IRQ Signal (22us) ] <---------------+                [ Audio Out ]|
++--------------------------------------------------------------------------+
+```
+
+
+
+### **Breakdown of the Components**
+
+* **RISC-V CPU Core (`cpu_top.sv`):** The central engine that handles instruction fetching and decoding. It now includes the **Hardware Multiplier** in the ALU for single-cycle DSP operations.
+* **M-Extension Logic:** A sub-unit within the ALU that specifically triggers when it sees the `funct7 == 7'b0000001` signature, executing the `mul` instruction instantly.
+* **Timer Module (`timer.sv`):** A dedicated hardware "metronome" that counts clock cycles. When it reaches the threshold (your counter hit `0x0c` in verification), it sends an **IRQ (Interrupt Request)** signal directly to the CPU's Program Counter.
+* **MMIO Bus (Memory Mapped I/O):** This is the internal wiring harness. When the CPU writes to a specific memory address (like `0x400`), the data is automatically routed to the **Audio PWM** instead of the RAM.
+* **Audio PWM Engine (`audio_pwm.sv`):** Receives the digital result from the hardware multiplier and converts it into high-speed pulses to create analog sound.
+
 
 ## 🏗️ Dataflow & Control Architecture
 

@@ -1,0 +1,167 @@
+VERSION 5.7 ;
+  NOWIREEXTENSIONATPIN ON ;
+  DIVIDERCHAR "/" ;
+  BUSBITCHARS "[]" ;
+MACRO audio_soc_top
+  CLASS BLOCK ;
+  FOREIGN audio_soc_top ;
+  ORIGIN 0.000 0.000 ;
+  SIZE 1000.000 BY 1000.000 ;
+  PIN audio_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 0.090 0.000 0.370 4.000 ;
+    END
+  END audio_out
+  PIN clk
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 351.070 996.000 351.350 1000.000 ;
+    END
+  END clk
+  PIN rst_n
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met3 ;
+        RECT 996.000 312.840 1000.000 313.440 ;
+    END
+  END rst_n
+  PIN vccd1
+    DIRECTION INOUT ;
+    USE POWER ;
+    PORT
+      LAYER met4 ;
+        RECT 14.020 10.640 17.020 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 174.020 10.640 177.020 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 334.020 10.640 337.020 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 494.020 10.640 497.020 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 654.020 10.640 657.020 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 814.020 10.640 817.020 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 974.020 10.640 977.020 987.600 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 19.380 994.300 22.380 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 179.380 994.300 182.380 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 339.380 994.300 342.380 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 499.380 994.300 502.380 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 659.380 994.300 662.380 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 819.380 994.300 822.380 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 979.380 994.300 982.380 ;
+    END
+  END vccd1
+  PIN vssd1
+    DIRECTION INOUT ;
+    USE GROUND ;
+    PORT
+      LAYER met4 ;
+        RECT 18.720 10.640 21.720 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 178.720 10.640 181.720 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 338.720 10.640 341.720 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 498.720 10.640 501.720 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 658.720 10.640 661.720 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 818.720 10.640 821.720 987.600 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 978.720 10.640 981.720 987.600 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 24.080 994.300 27.080 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 184.080 994.300 187.080 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 344.080 994.300 347.080 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 504.080 994.300 507.080 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 664.080 994.300 667.080 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 824.080 994.300 827.080 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 984.080 994.300 987.080 ;
+    END
+  END vssd1
+  OBS
+      LAYER li1 ;
+        RECT 5.520 10.795 994.060 987.445 ;
+      LAYER met1 ;
+        RECT 1.450 10.640 994.060 987.600 ;
+      LAYER met2 ;
+        RECT 0.160 4.280 981.630 987.545 ;
+        RECT 0.650 3.670 981.630 4.280 ;
+      LAYER met3 ;
+        RECT 14.130 10.715 981.610 987.525 ;
+  END
+END audio_soc_top
+END LIBRARY
+

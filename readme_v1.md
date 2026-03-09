@@ -52,7 +52,7 @@ This section describes how the "Manager" (Control Unit), "Machines" (ALU), and "
 
 ---
 
-### 1.4 Hardware Multiplication Verification <----Current
+### 1.4 Hardware Multiplication Verification 
 
 
 * **Test Methodology:** Developed a bare-metal assembly firmware (`start.S`) that utilizes the `mul` instruction within an Interrupt Service Routine (ISR) to scale audio samples in real-time.
@@ -77,7 +77,7 @@ This section describes how the "Manager" (Control Unit), "Machines" (ALU), and "
 
 ---
 
-## Path 2: Physical Design (The "Silicon" Path)
+## Path 2: Physical Design (The "Silicon" Path)<----Current
 
 This is where the SystemVerilog code is taken to see how it looks as a physical chip using the **OpenLane** flow.
 

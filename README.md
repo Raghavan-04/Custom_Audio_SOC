@@ -1,10 +1,10 @@
 
 
-# 🚀 RV32IM Audio SoC
+#  RV32IM Audio SoC
 
 A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time audio synthesis**. By implementing a single-cycle execution model and hardware-accelerated math, this SoC eliminates jitter and ensures high-fidelity 44.1 kHz signal processing.
 
-## ⚡ Key Highlights
+##  Key Highlights
 
 * **Deterministic Timing:** Single-cycle execution ($CPI = 1.0$) ensures predictable audio sample delivery by executing every instruction in exactly one clock cycle.
 * **Hardware Acceleration:** Dedicated RV32M hardware multiplier reduces math latency from ~32 cycles to **1 cycle**.
@@ -54,7 +54,7 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 * **Audio PWM Engine (`audio_pwm.sv`):** Receives the digital result from the hardware multiplier and converts it into high-speed pulses to create analog sound.
 
 
-## 🏗️ Dataflow & Control Architecture
+##  Dataflow & Control Architecture
 
 This diagram illustrates the separation between the **Control Path** (instruction decoding and interrupt logic) and the **Data Path** (arithmetic execution and MMIO).
 

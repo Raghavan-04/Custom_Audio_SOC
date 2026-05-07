@@ -165,7 +165,7 @@ The SoC treats peripherals as memory addresses:
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 

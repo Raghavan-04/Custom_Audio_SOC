@@ -113,7 +113,7 @@ This diagram illustrates the separation between the **Control Path** (instructio
 
 ---
 
-## 🏎️ Performance Benchmarking: RV32I vs. RV32M
+##  Performance Benchmarking: RV32I vs. RV32M
 
 In a standard **RV32I** (Integer-only) implementation, multiplication must be emulated in software. For real-time audio, this overhead often exceeds the **22µs** sample deadline.
 

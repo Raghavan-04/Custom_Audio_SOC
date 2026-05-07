@@ -1,4 +1,4 @@
-# 🚀 RV32IM Audio SoC
+#  RV32IM Audio SoC
 
 **A custom RISC-V System-on-Chip (SoC) optimized for real-time, jitter-free audio processing.**
 

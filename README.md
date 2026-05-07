@@ -146,7 +146,7 @@ The SoC treats peripherals as memory addresses:
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```bash
 ├── rtl/                   # SystemVerilog RTL Source

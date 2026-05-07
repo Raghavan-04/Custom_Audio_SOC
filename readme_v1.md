@@ -2,7 +2,7 @@
 
 **A custom RISC-V System-on-Chip (SoC) optimized for real-time, jitter-free audio processing.**
 
-## 📑 System Specifications
+##  System Specifications
 
 | Feature | Specification | Technical Implementation |
 | --- | --- | --- |

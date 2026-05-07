@@ -101,7 +101,7 @@ This diagram illustrates the separation between the **Control Path** (instructio
 
 ---
 
-## 📑 System Specifications
+##  System Specifications
 
 | Feature | Implementation | Technical Detail |
 | --- | --- | --- |

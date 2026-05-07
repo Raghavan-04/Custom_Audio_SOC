@@ -127,7 +127,7 @@ In a standard **RV32I** (Integer-only) implementation, multiplication must be em
 
 ---
 
-## 🛠️ System Architecture
+##  System Architecture
 
 ### 1. Hardware-Accelerated Math (RV32M)
 

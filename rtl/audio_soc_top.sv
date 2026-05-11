@@ -24,6 +24,7 @@ module audio_soc_top (
         .irq(irq_signal), 
         .mepc(mepc_val)
     );
+    
 
     // 2. Instruction Memory
     instr_mem u_imem (.addr(pc_curr), .instr(instr));

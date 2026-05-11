@@ -28,7 +28,7 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 |  |  | (RV32IM Decoder)    |  |          +-----------------------------+  |
 |  |  +----------+----------+  |          |        DATA MEMORY /        |  |
 |  |             |             | <======> |     PERIPHERAL INTERFACE    |  |
-|  |  +----------v----------+  |  MMIO    |      (Memory Mapped I/O)    |  |
+|  |  +----------v----------+  |  MIMO    |      (Memory Mapped I/O)    |  |
 |  |  |  Hardware Multiplier|  |  Bus     +--------------+--------------+  |
 |  |  |  (1-Cycle Math)     |  |                         |                 |
 |  |  +----------+----------+  |             +-----------+-----------+     |

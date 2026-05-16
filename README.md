@@ -192,19 +192,22 @@ The SoC treats peripherals as memory addresses:
 ##  Project Structure
 
 ```bash
-├── rtl/                   # SystemVerilog RTL Source
-│   ├── core/              # RV32IM CPU (ALU, Decoder, RegFile, PC)
-│   ├── memory/            # Instruction Memory (instr_mem.sv)
-│   ├── peripherals/       # Audio PWM & Hardware Timer
-│   └── audio_soc_top.sv   # Top-level SoC Integration & MMIO Logic
-├── dv/                    # Design Verification & Software
-│   ├── firmware/          # RISC-V Assembly (start.S) & Compiled ELF/BIN
-│   ├── hex/               # Machine code (firmware.hex) for RTL simulation
-│   └── tb_audio_soc.cpp   # Verilator C++ Testbench
-├── openlane/              # Physical Design & Synthesis scripts
-└── Makefile               # Simulation and Build Automation
-
+├── rtl/                   # SystemVerilog RTL Source Modules
+│   ├── core/              # RV32IM CPU Pipeline (ALU, Decoder, RegFile, PC)
+│   ├── memory/            # Read-Only Instruction Memory (instr_mem.sv)
+│   ├── peripherals/       # Peripheral Core Logic
+│   │   ├── timer.sv       # Real-time Interrupt Generation Timer
+│   │   └── audio_pwm_axi.sv # Upgraded AXI4-Lite Audio PWM Peripheral
+│   └── audio_soc_top.sv   # Top-Level System Integration & AXI Translation Bridge
+├── dv/                    # Design Verification & Simulation Testbenches
+│   ├── firmware/          # Low-Level Assembly Setup (start.S) & Compiled Programs
+│   ├── hex/               # Extracted Opcode Maps (firmware.hex) for Memory Loading
+│   └── tb_audio_soc_top.sv # SystemVerilog Testbench for Bus Handshake Verification
+├── openlane/              # Open-Source ASIC Physical Synthesis Flow Configurations
+└── Makefile               # Toolchain Compilation & RTL Simulation Automation
 ```
+
+
 
 ---
 

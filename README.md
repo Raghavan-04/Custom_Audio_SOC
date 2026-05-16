@@ -171,7 +171,7 @@ This diagram illustrates the separation between the **Control Path** (instructio
 | **Secondary Bus** | **Direct MMIO** | Ultra-low latency raw wire access (Timer Peripheral) |
 | **Audio Output** | **8-bit PWM** | 44.1 kHz fixed hardware sampling rate |
 | **Address Space** | **Register Mapped** | Audio PWM (`0x400`), Control Timer (`0x500`) |
-| **Verification** | **Icarus / Verilator** | Fully back-annotated VCD waveform simulation validation |
+| **Verification** | **Icarus & Verilator** | Fully back-annotated VCD waveform simulation validation |
 
 
 ---

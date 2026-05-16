@@ -22,7 +22,7 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 |                                                                          |
 |  +---------------------------+          +-----------------------------+  |
 |  |       RISC-V CPU CORE     |          |       INSTRUCTION MEMORY    |  |
-|  |       (rv32im_core.sv)    | <======> |       (instr_mem.sv)        |  |
+|  |       (cpu_top.sv)        | <======> |       (instr_mem.sv)        |  |
 |  |                           |  Bus     |       [Firmware.hex]        |  |
 |  |  +---------------------+  |          +-----------------------------+  |
 |  |  |   Control Unit      |  |                                           |

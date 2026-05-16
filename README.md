@@ -21,30 +21,48 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 |                          AUDIO SoC TOP-LEVEL (audio_soc_top.sv)          |
 |                                                                          |
 |  +---------------------------+          +-----------------------------+  |
-|  |       RISC-V CPU CORE     |          |       INSTRUCTION MEMORY    |  |
-|  |       (cpu_top.sv)        | <======> |       (instr_mem.sv)        |  |
-|  |                           |  Bus     |       [Firmware.hex]        |  |
+|  |       RISC-V CPU CORE     |          |     INSTRUCTION MEMORY      |  |
+|  |        (cpu_top.sv)       | <======> |       (instr_mem.sv)        |  |
+|  |                           |   Bus    |       [Firmware.hex]        |  |
 |  |  +---------------------+  |          +-----------------------------+  |
-|  |  |   Control Unit      |  |                                           |
-|  |  | (RV32IM Decoder)    |  |          +-----------------------------+  |
-|  |  +----------+----------+  |          |        DATA MEMORY /        |  |
-|  |             |             | <======> |     PERIPHERAL INTERFACE    |  |
-|  |  +----------v----------+  |  MIMO    |      (Memory Mapped I/O)    |  |
-|  |  |  Hardware Multiplier|  |  Bus     +--------------+--------------+  |
-|  |  |  (1-Cycle Math)     |  |                         |                 |
-|  |  +----------+----------+  |             +-----------+-----------+     |
-|  |             |             |             |                       |     |
-|  |  +----------v----------+  |      +------v-------+        +------v------+
-|  |  |  ALU / RegFile      |  |      | TIMER MODULE |        |  AUDIO PWM  |
-|  |  | (32x Registers)     |  |      |  (timer.sv)  |        | (audio_pwm.v)|
-|  |  +----------^----------+  |      +------+-------+        +------+------+
-|  +-------------|-------------+             |                       |     |
-|                |                           |                       |     |
-|      [ IRQ Signal (22us) ] <---------------+                [ Audio Out ]|
+|  |  |    Control Unit     |  |                                           |
+|  |  | (Instruction Decoder)  |          +-----------------------------+  |
+|  |  +----------+----------+  |          |      AXI4-LITE BRIDGE       |  |
+|  |             |             | <======> |    (audio_soc_top.sv)       |  |
+|  |  +----------v----------+  |   Bus    +--------------+--------------+  |
+|  |  |  Hardware Multiplier|  |                         |                 |
+|  |  |    (1-Cycle Math)   |  |                         |  AXI-Lite Bus   |
+|  |  +----------+----------+  |                         |  [AW, W, B]     |
+|  |             |             |             +----------------------+      |
+|  |             |             |             |                      |      |
+|  |  +----------v----------+  |      +------v-------+       +------v------+
+|  |  |  ALU / RegFile      |  |      | TIMER MODULE |       |  AUDIO PWM  |
+|  |  | (32x Registers)     |  |      |  (timer.sv)  |       | (audio_pwm_ |
+|  |  +----------^----------+  |      |              |       |   axi.sv)   |
+|  +-------------|-------------+      +------+-------+       +------+------+
+|                |                           |                      |      |
+|       [ IRQ Signal (22µs) ] <--------------+                      v      |
+|                                                           [ Audio Out ]  |
 +--------------------------------------------------------------------------+
+
 ```
+# RV32IM Audio SoC with AXI4-Lite Interconnect
 
+A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time audio synthesis**. By implementing a single-cycle execution model, hardware-accelerated math, and an industry-standard AMBA AXI4-Lite peripheral bus, this SoC eliminates clock jitter and ensures high-fidelity 44.1 kHz signal processing.
 
+## Key Highlights
+
+* **Deterministic Timing:** Single-cycle execution (CPI = 1.0) ensures predictable audio sample delivery by executing instructions within a single clock period.
+* **Hardware Acceleration:** Dedicated RV32M hardware multiplier reduces arithmetic DSP latency from ~32 clock cycles to **1 cycle**.
+* **Standardized Interconnect:** Integrates an **AXI4-Lite Bridge** for robust, handshake-driven communication with critical audio peripherals.
+* **Zero-Jitter Audio:** Hardware timer interrupts (IRQ) trigger at precise **22µs** intervals for rock-solid 44.1 kHz output sampling.
+* **Silicon Ready:** RTL fully structured and optimized for the **OpenLane** (SkyWater 130nm) physical design automation flow.
+
+---
+
+## System-on-Chip (SoC) Architectural Block Diagram
+
+```text
 
 ### **Breakdown of the Components**
 
@@ -60,44 +78,43 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 This diagram illustrates the separation between the **Control Path** (instruction decoding and interrupt logic) and the **Data Path** (arithmetic execution and MMIO).
 
 ```text
-[ SYSTEM CONTROL & INTERRUPTS ]             [ DATA EXECUTION PATH ]
-=================================           =========================
+[ SYSTEM CONTROL & INTERRUPTS ]             [ DATA EXECUTION & BUS TRANSLATION ]
+=================================           ====================================
      
 +-------------------------------+           +-----------------------+
 |     HARDWARE TIMER (MMIO)     |           |  INSTRUCTION MEMORY   |
-|   (Address: 0x500 | 22us)     |           |    (Bare-metal Hex)   |
+|    (Address: 0x500 | 22µs)    |           |    (Bare-metal Hex)   |
 +---------------+---------------+           +-----------+-----------+
                 |                                       |
   [ IRQ Signal ]+-----> (Interrupt Logic)               | (32-bit Instr)
-                               |                        v
-                    +----------v----------------+-------------------+
-                    |      CONTROL UNIT         |   REGISTER FILE   |
-                    |  (Instruction Decoder)    | (32 Gen-Purpose)  |
-                    +----------+----------------+---------+---------+
-                               |                          |
-                  (Control Lines: alu_op)        (Sample A & B Data)
-                               |                          |
-                    +----------v----------------+---------v---------+
-                    |      ALU DECODER          | HARDWARE MULTIPLIER |
-                    |  (M-Extension Logic)      | (Single-Cycle Unit) |
-                    +----------+----------------+---------+---------+
-                               |                          |
-                  (Select: ADD vs. MUL)          (32-bit Product)
-                               |                          |
-                               |                +---------v---------+
-                               |                | MMIO INTERCONNECT |
- [ Write Enable (WE) ] --------+--------------->| (Address Decode)  |
-                                                +---------+---------+
-                                                          |
-                                                 (8-bit Duty Cycle)
-                                                          |
-                                                +---------v---------+
-                                                |  AUDIO PWM ENGINE |
-                                                |  (Address: 0x400) |
-                                                +---------+---------+
-                                                          |
-                                                    [ SPEAKER OUT ]
-
+                        |                               v
+             +----------v----------------+-------------------+
+             |       CONTROL UNIT        |   REGISTER FILE   |
+             |   (Instruction Decoder)   | (32 Gen-Purpose)  |
+             +----------+----------------+---------+---------+
+                        |                          |
+              (Control: alu_op)           (Sample Payload WData)
+                        |                          |
+             +----------v----------------+---------v---------+
+             |       ALU DECODER         |  HARDWARE MULTIPLIER |
+             |   (M-Extension Logic)     |  (Single-Cycle Unit) |
+             +----------+----------------+---------+---------+
+                        |                          |
+                (Select: ADD vs. MUL)       (32-bit Target Addr)
+                        |                          |
+                        |                +---------v---------+
+                        |                | AXI4-LITE BRIDGE  |
+  [ Write Enable (WE) ] +--------------->| (Valid Generator) |
+                                         +---------+---------+
+                                                   |
+                                      (AWVALID / WVALID Handshake)
+                                                   |
+                                         +---------v---------+
+                                         |   AXI AUDIO PWM   |
+                                         |  (Address: 0x400) |
+                                         +---------+---------+
+                                                   |
+                                             [ SPEAKER OUT ]
 ```
 
 **AFTER AXI**

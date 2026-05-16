@@ -91,6 +91,8 @@ The decision is made where the CPU sits on the silicon die versus where the Audi
 * **Goal:** Calculate the **Power, Performance, and Area (PPA)**. It will be possible to say, "This Audio SoC takes up 0.5 mm² and uses 10mW of power."
 
 ---
+##
+
 
 ## Path 3: Advanced Audio (The "Musician" Path)
 
@@ -263,4 +265,44 @@ Since the "Brain" (CPU) and the "Voice" (Audio PWM) have been successfully built
 Two distinct paths can be taken: **Enhancing the Hardware (Front-End)** or **Moving to Silicon (Back-End)**.
 
 ---
+## Diagrams
+```text
+[ SYSTEM CONTROL & INTERRUPTS ]             [ DATA EXECUTION & BUS TRANSLATION ]
+=================================           ====================================
+     
++-------------------------------+           +-----------------------+
+|     HARDWARE TIMER (MMIO)     |           |  INSTRUCTION MEMORY   |
+|    (Address: 0x500 | 22µs)    |           |    (Bare-metal Hex)   |
++---------------+---------------+           +-----------+-----------+
+                |                                       |
+  [ IRQ Signal ]+-----> (Interrupt Logic)               | (32-bit Instr)
+                        |                               v
+             +----------v----------------+-------------------+
+             |       CONTROL UNIT        |   REGISTER FILE   |
+             |   (Instruction Decoder)   | (32 Gen-Purpose)  |
+             +----------+----------------+---------+---------+
+                        |                          |
+              (Control: alu_op)           (Sample Payload WData)
+                        |                          |
+             +----------v----------------+---------v---------+
+             |       ALU DECODER         |  HARDWARE MULTIPLIER |
+             |   (M-Extension Logic)     |  (Single-Cycle Unit) |
+             +----------+----------------+---------+---------+
+                        |                          |
+                (Select: ADD vs. MUL)       (32-bit Target Addr)
+                        |                          |
+                        |                +---------v---------+
+                        |                | AXI4-LITE BRIDGE  |
+  [ Write Enable (WE) ] +--------------->| (Valid Generator) |
+                                         +---------+---------+
+                                                   |
+                                      (AWVALID / WVALID Handshake)
+                                                   |
+                                         +---------v---------+
+                                         |   AXI AUDIO PWM   |
+                                         |  (Address: 0x400) |
+                                         +---------+---------+
+                                                   |
+                                             [ SPEAKER OUT ]
+```
 

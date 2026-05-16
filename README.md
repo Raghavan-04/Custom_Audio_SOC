@@ -2,15 +2,16 @@
 
 #  RV32IM Audio SoC
 
-A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time audio synthesis**. By implementing a single-cycle execution model and hardware-accelerated math, this SoC eliminates jitter and ensures high-fidelity 44.1 kHz signal processing.
+A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time audio synthesis**. By implementing a single-cycle execution model, hardware-accelerated math, and an industry-standard AXI4-Lite peripheral bus, this SoC eliminates clock jitter and ensures high-fidelity 44.1 kHz signal processing.
 
 ##  Key Highlights
 
-* **Deterministic Timing:** Single-cycle execution ($CPI = 1.0$) ensures predictable audio sample delivery by executing every instruction in exactly one clock cycle.
-* **Hardware Acceleration:** Dedicated RV32M hardware multiplier reduces math latency from ~32 cycles to **1 cycle**.
-* **Zero-Jitter Audio:** Hardware timer interrupts (IRQ) trigger at precise **22µs** intervals for stable 44.1 kHz output.
-* **Silicon Ready:** RTL designed for the **OpenLane** (SkyWater 130nm) physical design flow.
-
+* **Deterministic Timing:** Single-cycle execution (CPI = 1.0) ensures predictable audio sample delivery by executing instructions within a single clock period.
+* **Hardware Acceleration:** Dedicated RV32M hardware multiplier reduces arithmetic DSP latency from ~32 clock cycles to **1 cycle**.
+* **Standardized Interconnect:** Integrates an **AMBA AXI4-Lite Bridge** for robust, handshake-driven communication with audio peripherals.
+* **Zero-Jitter Audio:** Hardware timer interrupts (IRQ) trigger at precise **22µs** intervals for rock-solid 44.1 kHz output sampling.
+* **Silicon Ready:** RTL fully structured and optimized for the **OpenLane** (SkyWater 130nm) physical design automation flow.
+  
 ---
 ## **System-on-Chip (SoC) Architectural Block Diagram**
 
@@ -21,8 +22,8 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 |                                                                          |
 |  +---------------------------+          +-----------------------------+  |
 |  |       RISC-V CPU CORE     |          |       INSTRUCTION MEMORY    |  |
-|  |       (cpu_top.sv)        | <======> |       (instr_mem.sv)        |  |
-|  |                           |  Bus     |      [Firmware.hex]         |  |
+|  |       (rv32im_core.sv)    | <======> |       (instr_mem.sv)        |  |
+|  |                           |  Bus     |       [Firmware.hex]        |  |
 |  |  +---------------------+  |          +-----------------------------+  |
 |  |  |   Control Unit      |  |                                           |
 |  |  | (RV32IM Decoder)    |  |          +-----------------------------+  |
@@ -156,6 +157,25 @@ This diagram illustrates the separation between the **Control Path** (instructio
 
 ---
 
+**AFTER AXI**
+
+
+
+## System Specifications
+
+| Feature | Implementation | Technical Detail |
+| --- | --- | --- |
+| **ISA** | **RV32IM** | Base Integer + M-Extension (Hardware Multiplication) |
+| **Clock Model** | **Single-Cycle** | Uniform execution timing across instruction classes |
+| **Primary Bus** | **AMBA AXI4-Lite** | Protocol-matched `AW`, `W`, and `B` handshaking channels (Audio Peripheral) |
+| **Secondary Bus** | **Direct MMIO** | Ultra-low latency raw wire access (Timer Peripheral) |
+| **Audio Output** | **8-bit PWM** | 44.1 kHz fixed hardware sampling rate |
+| **Address Space** | **Register Mapped** | Audio PWM (`0x400`), Control Timer (`0x500`) |
+| **Verification** | **Icarus / Verilator** | Fully back-annotated VCD waveform simulation validation |
+
+
+---
+
 ##  Performance Benchmarking: RV32I vs. RV32M
 
 In a standard **RV32I** (Integer-only) implementation, multiplication must be emulated in software. For real-time audio, this overhead often exceeds the **22µs** sample deadline.
@@ -233,4 +253,5 @@ This command compiles the RISC-V assembly, generates the machine code hex, build
 For further details, read **readme_v1.md** file to know more.
 
 ---
+
 

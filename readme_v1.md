@@ -306,3 +306,18 @@ Two distinct paths can be taken: **Enhancing the Hardware (Front-End)** or **Mov
                                              [ SPEAKER OUT ]
 ```
 
+
+
+
+### The Complete AMBA Memory Map- future updates....
+
+Every component on your chip will now sit on a clean, standardized address grid:
+
+| Subsystem / Peripheral | Protocol | Address Range | Purpose |
+| --- | --- | --- | --- |
+| **Audio PWM Module** | AXI4-Lite | `0x0000_0400` | Audio sample stream engine |
+| **System Timer** | AMBA APB | `0x0000_0500` | Precise 22µs real-time interrupt generator |
+| **GPIO Controller** | AMBA APB | `0x0000_0600` | General purpose input/output (LEDs/Switches) |
+| **Data SRAM (1KB)** | AXI4-Lite | `0x0000_1000` to `0x0000_13FF` | Audio Wavetable synth lookup tables |
+
+---

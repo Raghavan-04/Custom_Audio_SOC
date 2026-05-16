@@ -46,23 +46,6 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 +--------------------------------------------------------------------------+
 
 ```
-# RV32IM Audio SoC with AXI4-Lite Interconnect
-
-A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time audio synthesis**. By implementing a single-cycle execution model, hardware-accelerated math, and an industry-standard AMBA AXI4-Lite peripheral bus, this SoC eliminates clock jitter and ensures high-fidelity 44.1 kHz signal processing.
-
-## Key Highlights
-
-* **Deterministic Timing:** Single-cycle execution (CPI = 1.0) ensures predictable audio sample delivery by executing instructions within a single clock period.
-* **Hardware Acceleration:** Dedicated RV32M hardware multiplier reduces arithmetic DSP latency from ~32 clock cycles to **1 cycle**.
-* **Standardized Interconnect:** Integrates an **AXI4-Lite Bridge** for robust, handshake-driven communication with critical audio peripherals.
-* **Zero-Jitter Audio:** Hardware timer interrupts (IRQ) trigger at precise **22µs** intervals for rock-solid 44.1 kHz output sampling.
-* **Silicon Ready:** RTL fully structured and optimized for the **OpenLane** (SkyWater 130nm) physical design automation flow.
-
----
-
-## System-on-Chip (SoC) Architectural Block Diagram
-
-```text
 
 ### **Breakdown of the Components**
 

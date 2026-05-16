@@ -99,6 +99,49 @@ This diagram illustrates the separation between the **Control Path** (instructio
 
 ```
 
+**AFTER AXI**
+
+```text
+
+[ SYSTEM CONTROL & INTERRUPTS ]             [ DATA EXECUTION & BUS TRANSLATION ]
+=================================           ====================================
+     
++-------------------------------+           +-----------------------+
+|     HARDWARE TIMER (MMIO)     |           |  INSTRUCTION MEMORY   |
+|    (Address: 0x500 | 22µs)    |           |    (Bare-metal Hex)   |
++---------------+---------------+           +-----------+-----------+
+                |                                       |
+  [ IRQ Signal ]+-----> (Interrupt Logic)               | (32-bit Instr)
+                        |                               v
+             +----------v----------------+-------------------+
+             |       CONTROL UNIT        |   REGISTER FILE   |
+             |   (Instruction Decoder)   | (32 Gen-Purpose)  |
+             +----------+----------------+---------+---------+
+                        |                          |
+              (Control: alu_op)           (Sample Payload WData)
+                        |                          |
+             +----------v----------------+---------v---------+
+             |       ALU DECODER         |  HARDWARE MULTIPLIER |
+             |   (M-Extension Logic)     |  (Single-Cycle Unit) |
+             +----------+----------------+---------+---------+
+                        |                          |
+                (Select: ADD vs. MUL)       (32-bit Target Addr)
+                        |                          |
+                        |                +---------v---------+
+                        |                | AXI4-LITE BRIDGE  |
+  [ Write Enable (WE) ] +--------------->| (Valid Generator) |
+                                         +---------+---------+
+                                                   |
+                                      (AWVALID / WVALID Handshake)
+                                                   |
+                                         +---------v---------+
+                                         |   AXI AUDIO PWM   |
+                                         |  (Address: 0x400) |
+                                         +---------+---------+
+                                                   |
+                                             [ SPEAKER OUT ]
+
+```
 ---
 
 ##  System Specifications

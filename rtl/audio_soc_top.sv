@@ -12,6 +12,23 @@ module audio_soc_top (
     // New Interrupt Signals
     logic        irq_signal; // Triggered by Timer
     logic [31:0] mepc_val;   // Saved PC during interrupt
+    // --- 2. AXI-Lite Bus Wires (New) ---
+    logic [31:0] m_axi_awaddr;
+    logic        m_axi_awvalid, m_axi_awready;
+    logic [31:0] m_axi_wdata;
+    logic        m_axi_wvalid,  m_axi_wready;
+    logic [1:0]  m_axi_bresp;
+    logic        m_axi_bvalid,  m_axi_bready;
+
+    // --- 3. The AXI-Lite Bridge Logic ---
+    // This connects your CPU's simple wires to the AXI protocol
+    assign m_axi_awaddr  = alu_result;
+    assign m_axi_wdata   = read_data2;
+    
+    // Valid signals only fire when the CPU specifically addresses 0x400
+    assign m_axi_awvalid = (mem_we && (alu_result == 32'h400));
+    assign m_axi_wvalid  = (mem_we && (alu_result == 32'h400));
+    assign m_axi_bready  = 1'b1; // CPU is always ready to receive "Write OK"
 
     // 1. Program Counter (Updated with IRQ and MEPC)
     // Note: The logic for pc_next (pc+4 vs 0x20) should now move INSIDE the pc module

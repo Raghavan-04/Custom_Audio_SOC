@@ -58,9 +58,8 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 
 ##  Dataflow & Control Architecture
 
-This diagram illustrates the separation between the **Control Path** (instruction decoding and interrupt logic) and the **Data Path** (arithmetic execution and MMIO).
+This diagram illustrates the separation between the **Control Path** (instruction decoding and interrupt logic) and the **Data Path** (arithmetic execution and MMIO & AXI).
 
-**AXI**
 
 ```text
 
@@ -104,21 +103,6 @@ This diagram illustrates the separation between the **Control Path** (instructio
 
 ```
 ---
-
-##  System Specifications
-
-| Feature | Implementation | Technical Detail |
-| --- | --- | --- |
-| **ISA** | **RV32IM** | Base Integer + M-Extension (Multiplication) |
-| **Clock Model** | **Single-Cycle** | Constant execution time for all instructions |
-| **Audio Output** | **8-bit PWM** | 44.1 kHz sampling rate |
-| **I/O Mapping** | **MMIO** | Audio PWM (`0x400`), Timer (`0x500`) |
-| **Verification** | **Verilator** | Cycle-accurate RTL simulation with GTKWave |
-
----
-
-**AFTER AXI**
-
 
 
 ## System Specifications

@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 # Page config
 st.set_page_config(page_title="Audio SoC Simulator", page_icon="🎵", layout="wide")
 
-# CSS Styling
+# CSS
 st.markdown("""
 <style>
     .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
@@ -22,23 +22,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- GLOBAL CACHED FUNCTIONS (Moved out of tabs for perfect execution) ---
-@st.cache_data
-def generate_waveform(freq, vol, filt, samples=2000):
-    sample_rate = 44100
-    t = np.linspace(0, samples / sample_rate, samples)
-    waveform = np.sin(2 * np.pi * freq * t) * (vol / 100)
-    
-    if filt < 5000:
-        alpha = filt / (filt + 1000)
-        filtered = np.zeros_like(waveform)
-        filtered[0] = waveform[0]
-        for i in range(1, len(waveform)):
-            filtered[i] = alpha * waveform[i] + (1 - alpha) * filtered[i-1]
-        waveform = filtered
-    
-    return t, waveform
-
 # Header
 st.markdown("""
 <div class="header">
@@ -52,19 +35,6 @@ st.sidebar.header("⚙️ Audio Parameters")
 volume = st.sidebar.slider("Volume (Gain)", 0, 100, 50, step=5)
 frequency = st.sidebar.slider("Frequency", 100, 2000, 440, step=50)
 filter_cutoff = st.sidebar.slider("Filter Cutoff", 200, 5000, 1000, step=200)
-
-# --- ADDED FEATURE: Real Sound Engine ---
-st.sidebar.markdown("---")
-st.sidebar.subheader("🔊 Live Audio Engine")
-# Generate 1.0 second of playable audio array based on user parameters
-playback_rate = 44100
-t_audio = np.linspace(0, 1.0, playback_rate, endpoint=False)
-audio_data = np.sin(2 * np.pi * frequency * t_audio) * (volume / 100)
-# Simple lowpass filter implementation for playback array
-if filter_cutoff < 5000:
-    alpha_a = filter_cutoff / (filter_cutoff + 1000)
-    audio_data = np.convolve(audio_data, [alpha_a, 1 - alpha_a], mode='same')
-st.sidebar.audio(np.clip(audio_data, -1.0, 1.0), sample_rate=playback_rate)
 
 # Metrics row
 col1, col2, col3, col4 = st.columns(4)
@@ -85,6 +55,22 @@ tab1, tab2, tab3, tab4 = st.tabs(["🎛️ Waveform", "📡 Pipeline", "🔧 Mod
 # TAB 1: Waveform
 with tab1:
     st.header("Real-Time Audio Output")
+    
+    @st.cache_data
+    def generate_waveform(freq, vol, filt, samples=2000):
+        sample_rate = 44100
+        t = np.linspace(0, samples / sample_rate, samples)
+        waveform = np.sin(2 * np.pi * freq * t) * (vol / 100)
+        
+        if filt < 5000:
+            alpha = filt / (filt + 1000)
+            filtered = np.zeros_like(waveform)
+            filtered[0] = waveform[0]
+            for i in range(1, len(waveform)):
+                filtered[i] = alpha * waveform[i] + (1 - alpha) * filtered[i-1]
+            waveform = filtered
+        
+        return t, waveform
     
     t, waveform = generate_waveform(frequency, volume, filter_cutoff)
     
@@ -109,15 +95,16 @@ with tab1:
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric("Frequency Target", f"{frequency} Hz")
+        st.metric("Frequency", f"{frequency} Hz")
     with col2:
-        st.metric("Volume Gain", f"{volume}%")
+        st.metric("Volume", f"{volume}%")
     with col3:
         st.metric("Filter Cutoff", f"{filter_cutoff} Hz")
 
 # TAB 2: Pipeline
 with tab2:
     st.header("Data Processing Pipeline")
+    
     col1, col2 = st.columns([2, 1])
     
     with col1:
@@ -162,15 +149,20 @@ with tab2:
         st.markdown("""
         **Pipeline Stages:**
         
-        1️⃣ **Fetch** - CPU reads instruction
+        1️⃣ **Fetch**
+        CPU reads instruction
         
-        2️⃣ **Decode** - Instruction identified
+        2️⃣ **Decode**
+        Instruction identified
         
-        3️⃣ **Execute** - ALU executes operation
+        3️⃣ **Execute**
+        ALU executes operation
         
-        4️⃣ **AXI Bus** - Safe data transfer
+        4️⃣ **AXI Bus**
+        Safe data transfer
         
-        5️⃣ **PWM Output** - Speaker conversion
+        5️⃣ **PWM Output**
+        Speaker conversion
         
         ⏱️ **Timing:** Every 22µs
         """)
@@ -191,14 +183,22 @@ with tab2:
 # TAB 3: Modules
 with tab3:
     st.header("System-on-Chip Modules")
+    
     col1, col2 = st.columns(2)
     
     with col1:
         st.subheader("RV32IM CPU Core")
         st.write("""
         **Specifications:**
-        - 32-bit RISC-V processor with M-Extension
-        - Single-cycle hardware multiplier (1 cycle vs 32+ software cycles)
+        - 32-bit RISC-V processor
+        - Single-cycle execution model
+        - Hardware multiplier (1 cycle vs 32+)
+        - 35x faster than software
+        
+        **Performance:**
+        - MUL: 1 cycle (vs 32-40 software)
+        - Gain Control: 3 cycles (vs 50)
+        - FIR Filter Tap: 12 cycles (vs 120)
         """)
         
         operations = ['32-bit Multiply', 'Gain Control', 'FIR Filter Tap']
@@ -208,8 +208,8 @@ with tab3:
             go.Bar(name='Speedup', x=operations, y=rv32i, marker_color='#667eea')
         ])
         fig_mult.update_layout(
-            title="Hardware Multiplier Speedup Factor",
-            yaxis_title="Speedup (RV32I vs RV32IM)",
+            title="Hardware Multiplier Speedup",
+            yaxis_title="Speedup Factor (RV32I vs RV32IM)",
             height=300
         )
         st.plotly_chart(fig_mult, use_container_width=True)
@@ -217,50 +217,147 @@ with tab3:
     with col2:
         st.subheader("Hardware Timer")
         st.write("""
-        - 22 microsecond intervals / 44.1 kHz sample clock
-        - Zero jitter processing system (±0 µs)
+        **Specifications:**
+        - Independent background timer
+        - 22 microsecond intervals
+        - 44.1 kHz sampling rate
+        - Zero jitter (±0 µs)
+        
+        **Performance:**
+        - Perfect timing accuracy
+        - No software drift
+        - Deterministic delivery
+        - Rock-solid 44.1 kHz
         """)
         
         interrupt_times = np.arange(0, 100, 22) / 1000
+        
         fig_timer = go.Figure()
         for t in interrupt_times:
             fig_timer.add_vline(x=t, line_dash='dash', line_color='#667eea', opacity=0.5)
         
         fig_timer.update_layout(
-            title="22µs Interrupt Pattern Timing (ms)",
-            xaxis_title="Time Interval",
+            title="22µs Interrupt Pattern (44.1 kHz)",
+            xaxis_title="Time (ms)",
             height=250
         )
         st.plotly_chart(fig_timer, use_container_width=True)
+    
+    st.markdown("---")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader("AXI4-Lite Bus Bridge")
+        st.write("""
+        **Protocol Details:**
+        - AMBA AXI4-Lite standardized
+        - Valid/Ready handshake
+        - Safe data transfer
+        - No data loss
+        
+        **Handshake:**
+        1. CPU sets AWVALID
+        2. Peripheral AWREADY
+        3. CPU sets WVALID
+        4. Peripheral WREADY
+        5. Safe transaction
+        """)
+    
+    with col2:
+        st.subheader("Audio PWM Engine")
+        st.write("""
+        **Specifications:**
+        - 8-bit PWM output
+        - Listens to AXI4-Lite
+        - Digital to analog conversion
+        - Speaker driver
+        
+        **Performance:**
+        - Real-time capture
+        - Zero latency
+        - Direct output
+        - Hardware implementation
+        """)
 
 # TAB 4: Specifications
 with tab4:
     st.header("Complete System Specifications")
+    
     col1, col2 = st.columns(2)
     
     with col1:
         st.subheader("Instruction Set Architecture")
-        specs1 = {"ISA": "RV32IM", "Word Size": "32-bit", "Execution Core": "Single-cycle"}
+        specs1 = {
+            "ISA": "RV32IM",
+            "Word Size": "32-bit",
+            "Base Integer": "Included",
+            "M-Extension": "Hardware Multiplier",
+            "Execution": "Single-cycle"
+        }
         for key, value in specs1.items():
             st.write(f"**{key}:** {value}")
+    
     with col2:
         st.subheader("Clock & Timing")
-        specs2 = {"Clock Model": "Single-Cycle Core", "Sample Rate": "44.1 kHz", "Sample Interval": "22.68 µs"}
+        specs2 = {
+            "Clock Model": "Single-Cycle",
+            "Execution Time": "Uniform (1 cycle)",
+            "Instruction Latency": "Constant",
+            "Pipeline Stages": "5",
+            "Sample Rate": "44.1 kHz"
+        }
         for key, value in specs2.items():
             st.write(f"**{key}:** {value}")
-            
+    
     st.markdown("---")
-    st.subheader("Performance Benchmarking Table")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader("Memory & I/O")
+        specs3 = {
+            "Instruction Memory": "On-chip ROM",
+            "Data Memory": "On-chip RAM",
+            "Audio Output": "Address 0x400 (AXI)",
+            "Timer Control": "Address 0x500",
+            "Bus Protocol": "AMBA AXI4-Lite"
+        }
+        for key, value in specs3.items():
+            st.write(f"**{key}:** {value}")
+    
+    with col2:
+        st.subheader("Audio Characteristics")
+        specs4 = {
+            "Output Format": "8-bit PWM",
+            "Sampling Rate": "44.1 kHz",
+            "Jitter": "±0 microseconds",
+            "Sample Interval": "22.68 µs",
+            "Max Frequency": "22.05 kHz"
+        }
+        for key, value in specs4.items():
+            st.write(f"**{key}:** {value}")
+    
+    st.markdown("---")
+    
+    st.subheader("Performance Benchmarking")
+    
     benchmark_data = {
         'Operation': ['32-bit Multiply', 'Gain Control', 'FIR Filter Tap'],
         'RV32I (Software)': ['32-40 Cycles', '50 Cycles', '120 Cycles'],
         'RV32IM (Hardware)': ['1 Cycle', '3 Cycles', '12 Cycles'],
         'Speedup': ['35x', '16x', '10x']
     }
+    
     st.dataframe(benchmark_data, use_container_width=True, hide_index=True)
+    
+    st.info("**Analysis:** With a 50MHz clock, CPU budget is ~1,100 cycles/sample. RV32M reduces 10-tap filter cost from 25% to <2% of CPU budget.")
+
+st.markdown("---")
 
 st.markdown("""
 <div style="text-align: center; color: #666; margin-top: 3rem; padding: 2rem 0; border-top: 1px solid #eee;">
-    <p><strong>Audio SoC Interactive Simulator v1.1</strong></p>
+    <p><strong>Audio SoC Interactive Simulator v1.0</strong></p>
+    <p style="font-size: 0.9rem;">Built with Streamlit | Custom RISC-V Hardware Design</p>
 </div>
 """, unsafe_allow_html=True)

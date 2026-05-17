@@ -62,13 +62,14 @@ module cpu_top (
     );
 
     // The Workbench (Register File)
+  // The Workbench (Register File)
     regfile u_regfile (
         .clk(clk),
-        .we3(reg_we),
-        .ra1(instr[19:15]), // rs1
-        .ra2(instr[24:20]), // rs2
-        .wa3(instr[11:7]),  // rd
-        .wd3(wb_data),      // Data to save back
+        .we(reg_we),        // Fixed from .we3
+        .rs1(instr[19:15]), // Fixed from .ra1
+        .rs2(instr[24:20]), // Fixed from .ra2
+        .rd(instr[11:7]),   // Fixed from .wa3
+        .wd(wb_data),       // Fixed from .wd3
         .rd1(reg_d1),
         .rd2(reg_d2)
     );

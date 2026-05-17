@@ -17,17 +17,17 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 ## SoC Architectural Block Diagram
 
 ```text
-+-----------------------------------------------------------------------------------+
-|                          AUDIO SoC TOP-LEVEL (audio_soc_top.sv)          |
-|                                                                          |
-|  +---------------------------+          +-----------------------------+  |
-|  |       RISC-V CPU CORE     |          |     INSTRUCTION MEMORY      |  |
-|  |        (cpu_top.sv)       | <======> |       (instr_mem.sv)        |  |
-|  |                           |   Bus    |       [Firmware.hex]        |  |
-|  |  +---------------------+  |          +-----------------------------+  |
-|  |  |    Control Unit     |  |                                           |
-|  |  | (Instruction Decoder)  |          +-----------------------------+  |
-|  |  +----------+----------+  |          |   AXI4-LITE ROUTER MATRIX   |  |
++----------------------------------------------------------------------------------+
+|                          AUDIO SoC TOP-LEVEL (audio_soc_top.sv)                  |
+|                                                                                  |
+|  +---------------------------+          +-----------------------------+          |
+|  |       RISC-V CPU CORE     |          |     INSTRUCTION MEMORY      |          |
+|  |        (cpu_top.sv)       | <======> |       (instr_mem.sv)        |          |
+|  |                           |   Bus    |       [Firmware.hex]        |          |
+|  |  +---------------------+  |          +-----------------------------+          |
+|  |  |    Control Unit     |  |                                                   |
+|  |  | (Instruction Decoder)  |          +-----------------------------+          |
+|  |  +----------+----------+  |          |   AXI4-LITE ROUTER MATRIX   |          |
 |  |             |             | <======> |      (axi_router.sv)        |          |
 |  |  +----------v----------+  | AXI Master+--------------+--------------+         |
 |  |  |  Hardware Multiplier|  |   Bus                   |                         |
@@ -45,18 +45,18 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 |                |              |  (Mapped to Top Level)  |                        |
 |                |              +------------+------------+                        |
 |                |                           |                                     |
-|                |                           | APB Peripheral Bus             |
-|                |                           v                             |
-|                |                  +--------+--------+                    |
-|                |                  |                 |                    |
-|                |            +-----v------+    +-----v------+             |
-|                |            | TIMER APB  |    |  GPIO APB  |             |
-|                |            |(timer_apb) |    | (gpio_apb) |             |
-|                |            +-----+------+    +-----+------+             |
-|                |                  |                 |                    |
-|       [ IRQ Signal (22µs) ] <-----+                 v                    |
-|                                                [8x GPIO Pins]            |
-+--------------------------------------------------------------------------+
+|                |                           | APB Peripheral Bus                  |
+|                |                           v                                     |
+|                |                  +--------+--------+                            |
+|                |                  |                 |                            |
+|                |            +-----v------+    +-----v------+                     |
+|                |            | TIMER APB  |    |  GPIO APB  |                     |
+|                |            |(timer_apb) |    | (gpio_apb) |                     |
+|                |            +-----+------+    +-----+------+                     |
+|                |                  |                 |                            |
+|       [ IRQ Signal (22µs) ] <-----+                 v                            |
+|                                                [8x GPIO Pins]                    |
++----------------------------------------------------------------------------------+
 
 ```
 

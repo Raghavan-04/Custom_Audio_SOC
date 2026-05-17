@@ -17,7 +17,7 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 ## SoC Architectural Block Diagram
 
 ```text
-+--------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------+
 |                          AUDIO SoC TOP-LEVEL (audio_soc_top.sv)          |
 |                                                                          |
 |  +---------------------------+          +-----------------------------+  |
@@ -26,26 +26,26 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 |  |                           |   Bus    |       [Firmware.hex]        |  |
 |  |  +---------------------+  |          +-----------------------------+  |
 |  |  |    Control Unit     |  |                                           |
-|  |  | (Instruction Decoder)  |  |          +-----------------------------+  |
+|  |  | (Instruction Decoder)  |          +-----------------------------+  |
 |  |  +----------+----------+  |          |   AXI4-LITE ROUTER MATRIX   |  |
-|  |             |             | <======> |      (axi_router.sv)        |  |
-|  |  +----------v----------+  | AXI Master+--------------+--------------+  |
-|  |  |  Hardware Multiplier|  |   Bus                   |                 |
-|  |  |    (1-Cycle Math)   |  |              +----------+----------+      |
-|  |  +----------+----------+  |              |                     |      |
-|  |             |             |              | Slot 1 (AXI)        | Slot 0 (AXI)|
-|  |  +----------v----------+  |              v                     v      |
-|  |  |  ALU / RegFile      |  |      +---------------+     +---------------+
-|  |  | (32x Registers)     |  |      |   1KB SRAM    |     |   AUDIO PWM   |
-|  |  +----------^----------+  |      |(data_sram_axi)|     |(audio_pwm_axi)|
-|  +-------------|-------------+      +---------------+     +-------+-------+
-|                |                                                  |      |
-|                |              Slot 2 (AXI-to-APB Bridge)          v      |
-|                |              +-------------------------+   [Audio Out]  |
-|                |              |  (Mapped to Top Level)  |                |
-|                |              +------------+------------+                |
-|                |                           |                             |
-|                |                           | APB Peripheral Bus          |
+|  |             |             | <======> |      (axi_router.sv)        |          |
+|  |  +----------v----------+  | AXI Master+--------------+--------------+         |
+|  |  |  Hardware Multiplier|  |   Bus                   |                         |
+|  |  |    (1-Cycle Math)   |  |              +----------+----------+              |
+|  |  +----------+----------+  |              |                     |              |
+|  |             |             |              | Slot 1 (AXI)        | Slot 0 (AXI) |
+|  |  +----------v----------+  |              v                     v              |
+|  |  |  ALU / RegFile      |  |      +---------------+     +---------------+      |
+|  |  | (32x Registers)     |  |      |   1KB SRAM    |     |   AUDIO PWM   |      |
+|  |  +----------^----------+  |      |(data_sram_axi)|     |(audio_pwm_axi)|      |
+|  +-------------|-------------+      +---------------+     +-------+-------+      |
+|                |                                                  |              |
+|                |              Slot 2 (AXI-to-APB Bridge)          v              |
+|                |              +-------------------------+   [Audio Out]          |
+|                |              |  (Mapped to Top Level)  |                        |
+|                |              +------------+------------+                        |
+|                |                           |                                     |
+|                |                           | APB Peripheral Bus             |
 |                |                           v                             |
 |                |                  +--------+--------+                    |
 |                |                  |                 |                    |

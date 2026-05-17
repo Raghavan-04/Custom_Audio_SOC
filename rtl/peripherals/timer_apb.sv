@@ -1,4 +1,4 @@
-module timer (
+module timer_apb (
     input  logic        clk,
     input  logic        rst_n,
     input  logic        we_i,      // Write Enable from CPU

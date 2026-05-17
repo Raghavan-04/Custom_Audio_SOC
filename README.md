@@ -26,9 +26,9 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 |  |                           |   Bus    |       [Firmware.hex]        |          |
 |  |  +---------------------+  |          +-----------------------------+          |
 |  |  |    Control Unit     |  |                                                   |
-|  |  | (Instruction Decoder)  |          +-----------------------------+          |
-|  |  +----------+----------+  |          |   AXI4-LITE ROUTER MATRIX   |          |
-|  |             |             | <======> |      (axi_router.sv)        |          |
+|  |  | (Instruction Decoder)  |           +-----------------------------+         |
+|  |  +----------+----------+  |           |   AXI4-LITE ROUTER MATRIX   |         |
+|  |             |             | <======>  |      (axi_router.sv)        |         |
 |  |  +----------v----------+  | AXI Master+--------------+--------------+         |
 |  |  |  Hardware Multiplier|  |   Bus                   |                         |
 |  |  |    (1-Cycle Math)   |  |              +----------+----------+              |
@@ -85,7 +85,7 @@ This mapping traces the structural isolation between the system's Control Path (
 |    (Address: 0x500 | 22µs)    |           |    (Bare-metal Hex)   |
 +---------------+---------------+           +-----------+-----------+
                 |                                       |
-  [ IRQ Signal ]+-----> (Interrupt Logic)               | (32-bit Instr)
+  [ IRQ Signal ]+--------> (Interrupt Logic)            | (32-bit Instr)
                         |                               v
              +----------v----------------+-------------------+
              |       CONTROL UNIT        |   REGISTER FILE   |
@@ -94,16 +94,16 @@ This mapping traces the structural isolation between the system's Control Path (
                         |                          |
               (Control: alu_op)           (Sample Payload WData)
                         |                          |
-             +----------v----------------+---------v---------+
+             +----------v----------------+---------v------------+
              |       ALU DECODER         |  HARDWARE MULTIPLIER |
              |   (M-Extension Logic)     |  (Single-Cycle Unit) |
-             +----------+----------------+---------+---------+
+             +----------+----------------+---------+------------+
                         |                          |
                 (Select: ADD vs. MUL)       (32-bit Target Addr)
                         |                          |
                         v                          v
-             +-----------------------------------------------+
-             |       CENTRALIZED AXI4-LITE BUS ROUTER        |
+             +------------------------------------------------+
+             |       CENTRALIZED AXI4-LITE BUS ROUTER         |
              +--------+---------------+---------------+-------+
                       |               |               |
              [Slot 0: 0x400]   [Slot 1: 0x1000] [Slot 2: Bridge]

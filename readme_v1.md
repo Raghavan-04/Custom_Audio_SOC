@@ -15,7 +15,140 @@
 
 ---
 
-## Timeline
+
+## Development Timeline
+
+### Phase 0: The Foundation (Baseline RV32I)
+
+Began by building the core "brain" of the system—a Single-Cycle RISC-V Processor based on the RV32I instruction set.
+
+- **CPU Architecture:** Designed fundamental logic blocks including ALU, Register File (32x GP registers), and Control Unit.
+- **Instruction Handling:** Implemented fetch → decode → execute pipeline for basic 32-bit instructions.
+- **Single-Cycle Determinism:** Ensured every instruction takes exactly one clock cycle (CPI = 1.0) — the cornerstone of predictable audio timing.
+
+---
+
+### Phase 1.1: Hardware Multiplier (RV32M)
+
+The ALU only added/subtracted. Audio volume mixing and filters (EQ) required multiplication.
+
+- **The Upgrade:** Implemented a dedicated **Hardware Multiplier** block in the ALU path.
+- **The Benefit:** Multiplication dropped from ~32 software loops to **1 cycle** — a 35x speedup for DSP operations.
+
+---
+
+### Phase 1.2: Timer Interrupt (The Metronome)
+
+The CPU was "guessing" when to send audio samples using wasteful delay loops.
+
+- **The Upgrade:** Built a hardware timer that sends an **Interrupt Signal (IRQ)** exactly every 22µs (for 44.1kHz audio).
+- **The Benefit:** CPU can now process audio effects (echo, reverb, filters) and only jumps to sample delivery when it's *exactly* time to play.
+
+---
+
+### Phase 1.3: AMBA AXI4-Lite Router Matrix (The Traffic Controller)
+
+Peripherals were directly wired to the CPU — fine for 2 devices, but doesn't scale.
+
+- **The Upgrade:** Implemented a **Centralized AXI4-Lite Router** (`axi_router.sv`) with:
+  - 3 independent slots with VALID/READY handshaking
+  - Address decoding matrix for memory-mapped routing
+  - Standardized AW/W/B channel separation
+
+- **The Benefit:** New peripherals plug into slots without rewiring the CPU. The router handles all transaction arbitration.
+
+```
+[CPU Master] ---> [AXI ROUTER] ---> Slot 0: Audio PWM (0x400)
+                        |--------> Slot 1: Data SRAM (0x1000)
+                        |--------> Slot 2: AXI-to-APB Bridge
+```
+
+---
+
+### Phase 1.4: AXI-to-APB Bridge & Low-Power Peripheral Bus
+
+AXI4-Lite is powerful but overkill for simple configuration registers (Timer, GPIO).
+
+- **The Upgrade:** Designed an **AXI-to-APB Bridge** that:
+  - Captures AXI transactions targeting `0x500`-`0x6FF`
+  - Converts them to low-overhead APB protocol (`PSEL`, `PENABLE`, `PWRITE`, `PRDATA`)
+  - Routes to subordinate APB slaves
+
+- **The Benefit:** 
+  - Timer and GPIO consume less silicon area
+  - Lower power consumption for config registers
+  - Standard AMBA ecosystem compatibility
+
+---
+
+### Phase 1.5: APB Peripheral Integration
+
+Added two native APB slaves to complete the peripheral subsystem:
+
+| Peripheral | Address | Purpose |
+| --- | --- | --- |
+| **Timer APB** (`timer_apb.sv`) | `0x500` | Precise 22µs IRQ generator |
+| **GPIO APB** (`gpio_apb.sv`) | `0x600` | 8-bit control for LEDs/switches |
+
+**Verification:** Confirmed via GTKWave that:
+- `psel` and `penable` strobe correctly during APB transactions
+- Timer counter asserts `irq_out` at `LOAD_VALUE` match
+- GPIO `pins_out` updates on APB write to `0x600`
+
+---
+
+### Phase 1.6: Data SRAM for Wavetable Synthesis
+
+To move beyond square waves (beep-boop) to real instrument sounds, the system needed a lookup table.
+
+- **The Upgrade:** Added **1KB AXI4-Lite Data SRAM** (`data_sram_axi.sv`) mapped to `0x1000`-`0x13FF`.
+- **The Benefit:** Stores precomputed waveforms (sine, piano, violin) for wavetable synthesis. CPU performs table lookups in 1 cycle instead of calculating waves in real-time.
+
+---
+
+### Phase 2.0: System Integration & Verification (Current)
+
+All components now talk through the standardized AMBA fabric:
+
+```
+INSTRUCTION MEMORY (0x0000)
+        ↑
+        │ (Instruction Fetch)
+        ↓
+    CPU CORE (RV32IM)
+        │
+        ↓ (AXI Master Transaction)
+    AXI ROUTER MATRIX
+        ├──→ AUDIO PWM (0x400) ──→ [Speaker Out]
+        ├──→ DATA SRAM (0x1000) ──→ [Wavetable Lookup]
+        └──→ AXI-to-APB BRIDGE
+                ├──→ TIMER (0x500) ──→ [IRQ to CPU]
+                └──→ GPIO (0x600) ──→ [LEDs/Buttons]
+```
+
+**Verification Completed:**
+- Cycle-accurate simulation via Verilator
+- AXI handshake waveforms validated in GTKWave
+- APB strobe timing confirmed
+- Hardware multiplier produces `alu_result` within 1 clock cycle
+
+---
+
+## Timeline Summary Table
+
+| Phase | Goal | Key Addition | Status |
+| --- | --- | --- | --- |
+| **Phase 0** | Basic CPU | RV32I Single-Cycle Core | ✅ Complete |
+| **Phase 1.1** | Fast Math | Hardware Multiplier (RV32M) | ✅ Complete |
+| **Phase 1.2** | Precise Timing | Timer Interrupt (22µs IRQ) | ✅ Complete |
+| **Phase 1.3** | Scalable Bus | AXI4-Lite Router Matrix | ✅ Complete |
+| **Phase 1.4** | Low-Power Config | AXI-to-APB Bridge | ✅ Complete |
+| **Phase 1.5** | Peripheral Suite | Timer APB + GPIO APB | ✅ Complete |
+| **Phase 1.6** | Wavetable Ready | 1KB AXI Data SRAM | ✅ Complete |
+| **Phase 2.0** | Integration | Full System Verification | 🔄 Current |
+| **Phase 3.0** | Physical Design | OpenLane → GDSII | ⏳ Planned |
+
+---
 
 ### 0->1 : The Foundation (Baseline RV32I)
 Began by building the core "brain" of the system—a Single-Cycle RISC-V Processor based on the RV32I instruction set.

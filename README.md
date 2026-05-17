@@ -29,7 +29,7 @@ A custom RISC-V System-on-Chip (SoC) designed for **deterministic, real-time aud
 |  |  | (Instruction Decoder)  |          +-----------------------------+  |
 |  |  +----------+----------+  |          |      AXI4-LITE BRIDGE       |  |
 |  |             |             | <======> |    (audio_soc_top.sv)       |  |
-|  |  +----------v----------+  |   Bus    +--------------+--------------+  |
+|  |  +----------v----------+  | MIMO Bus +--------------+--------------+  |
 |  |  |  Hardware Multiplier|  |                         |                 |
 |  |  |    (1-Cycle Math)   |  |                         |  AXI-Lite Bus   |
 |  |  +----------+----------+  |                         |  [AW, W, B]     |

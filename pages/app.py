@@ -89,8 +89,7 @@ with tab1:
         xaxis_title="Time (ms)",
         yaxis_title="Amplitude",
         hovermode='x unified',
-        height=400,
-        template='plotly_light'
+        height=400
     )
     st.plotly_chart(fig, use_container_width=True)
     
@@ -211,8 +210,7 @@ with tab3:
         fig_mult.update_layout(
             title="Hardware Multiplier Speedup",
             yaxis_title="Speedup Factor (RV32I vs RV32IM)",
-            height=300,
-            template='plotly_light'
+            height=300
         )
         st.plotly_chart(fig_mult, use_container_width=True)
     
@@ -241,8 +239,7 @@ with tab3:
         fig_timer.update_layout(
             title="22µs Interrupt Pattern (44.1 kHz)",
             xaxis_title="Time (ms)",
-            height=250,
-            template='plotly_light'
+            height=250
         )
         st.plotly_chart(fig_timer, use_container_width=True)
     

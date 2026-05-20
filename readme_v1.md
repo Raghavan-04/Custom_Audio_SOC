@@ -155,7 +155,7 @@ INSTRUCTION MEMORY (0x0000)
 | **Phase 1.5** | Peripheral Suite | Timer APB + GPIO APB | ✅ Complete |
 | **Phase 1.6** | Wavetable Ready | 1KB AXI Data SRAM | ✅ Complete |
 | **Phase 2.0** | Integration | Full System Verification | ✅ Complete |
-| **Phase 3.0** | Physical Design | OpenLane → GDSII | 🔄 Current |
+| **Phase 3.0** | Physical Design | OpenLane → GDSII | ✅ Complete |
 
 
 ---

@@ -106,7 +106,7 @@ To move beyond square waves (beep-boop) to real instrument sounds, the system ne
 
 ---
 
-### Phase 2.0: System Integration & Verification (Current)
+### Phase 2.0: System Integration & Verification 
 
 All components now talk through the standardized AMBA fabric:
 
@@ -125,6 +125,15 @@ INSTRUCTION MEMORY (0x0000)
                 ├──→ TIMER (0x500) ──→ [IRQ to CPU]
                 └──→ GPIO (0x600) ──→ [LEDs/Buttons]
 ```
+### Phase 3.0: Physical Design (current)
+
+| Parameter | New Verified Metric Value |
+| --- | --- |
+| **Phase 3.0 (Physical Layout)** | ✅ Complete |
+| **Total Realized Die Area**  | **0.0637 mm²** (~0.25mm × 0.25mm) |
+| **Total On-Chip Cells** | **7,336 Total Cells** (2,691 Pure Logic Gates) |
+| **Routing Layer Limit** |  **Metal 4 (`met4`)** |
+| **Interlayer Vias** | **21,857 Microscopic Vias** |
 
 **Verification Completed:**
 - Cycle-accurate simulation via Verilator

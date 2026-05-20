@@ -147,7 +147,7 @@ The physical implementation enforces strict power integrity across the core area
 * **Vertical Power Trunks:** Thick, low-resistance macro-straps implemented on Metal 4 (`met4`) supply steady power lanes down the periphery of the core.
 * **Horizontal Standard Cell Rails:** Uniformly pitched tracks on Metal 1/2 crossing standard cell rows at a 160µm pitch, clamping every flip-flop to a stable 1.8V $V_{DD}$ (`vccd1`) and $GND$ (`vssd1`) reference grid.
 
-## ⏱️ Static Timing Analysis (STA) Sign-Off Summary
+##  Static Timing Analysis (STA) Sign-Off Summary
 The compiled silicon comfortably fulfills your 50.0 MHz (20.0 ns period) timing constraints with substantial safe padding:
 * **Worst Negative Slack (WNS):** 0.00 ns (Perfectly Met; Zero Setup/Hold Violations).
 * **Asynchronous Reset Recovery Slack:** **15.35 ns (MET)**.

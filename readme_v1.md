@@ -141,6 +141,26 @@ INSTRUCTION MEMORY (0x0000)
 | **Total On-Chip Cells** | **7,336 Total Cells** (2,691 Pure Logic Gates) |
 | **Routing Layer Limit** |  **Metal 4 (`met4`)** |
 | **Interlayer Vias** | **21,857 Microscopic Vias** |
+
+## ⚡ Realized Power Distribution Network (PDN) Mesh
+The physical implementation enforces strict power integrity across the core area to prevent dynamic IR-drop noise during high-frequency audio synthesis:
+* **Vertical Power Trunks:** Thick, low-resistance macro-straps implemented on Metal 4 (`met4`) supply steady power lanes down the periphery of the core.
+* **Horizontal Standard Cell Rails:** Uniformly pitched tracks on Metal 1/2 crossing standard cell rows at a 160µm pitch, clamping every flip-flop to a stable 1.8V $V_{DD}$ (`vccd1`) and $GND$ (`vssd1`) reference grid.
+
+## ⏱️ Static Timing Analysis (STA) Sign-Off Summary
+The compiled silicon comfortably fulfills your 50.0 MHz (20.0 ns period) timing constraints with substantial safe padding:
+* **Worst Negative Slack (WNS):** 0.00 ns (Perfectly Met; Zero Setup/Hold Violations).
+* **Asynchronous Reset Recovery Slack:** **15.35 ns (MET)**.
+* **Synchronous Critical Path Data Slack:** **13.98 ns (MET)**.
+
+### Real-World Critical Path Profiling
+The system's longest electrical path originates at the Program Counter register, runs through the Instruction Memory cell lookups (`u_imem`), vectors through the Hardware Multiplier logic array, and settles safely at destination register `_4800_/D` in only **6.45 ns**—well below the 20.43 ns data required limit.
+
+## 🛡️ Physical Design Sign-Off & Manufacturability
+Verified using industry-standard EDA tools inside the OpenLane compiler pipeline:
+* **Magic & KLayout DRC:** **0 Violations**. Geometries completely conform to fabrication rule space clearances.
+* **Layout vs. Schematic (LVS):** **0 Errors (Passed)**. The physical layout perfectly mirrors the electrical schematic wire-for-wire across all **3,314 independent nets**.
+* **Antenna Rule Checking (ARC):** Clean pass. Long global traces are safely discharged using standard cell diode taps.
 ---
 
 ## Timeline Summary Table

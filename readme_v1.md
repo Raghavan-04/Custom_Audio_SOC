@@ -125,15 +125,7 @@ INSTRUCTION MEMORY (0x0000)
                 ├──→ TIMER (0x500) ──→ [IRQ to CPU]
                 └──→ GPIO (0x600) ──→ [LEDs/Buttons]
 ```
-### Phase 3.0: Physical Design (current)
 
-| Parameter | New Verified Metric Value |
-| --- | --- |
-| **Phase 3.0 (Physical Layout)** | ✅ Complete |
-| **Total Realized Die Area**  | **0.0637 mm²** (~0.25mm × 0.25mm) |
-| **Total On-Chip Cells** | **7,336 Total Cells** (2,691 Pure Logic Gates) |
-| **Routing Layer Limit** |  **Metal 4 (`met4`)** |
-| **Interlayer Vias** | **21,857 Microscopic Vias** |
 
 **Verification Completed:**
 - Cycle-accurate simulation via Verilator
@@ -141,6 +133,14 @@ INSTRUCTION MEMORY (0x0000)
 - APB strobe timing confirmed
 - Hardware multiplier produces `alu_result` within 1 clock cycle
 
+### Phase 3.0: Physical Design (current)
+
+| Parameter | New Verified Metric Value |
+| --- | --- |
+| **Total Realized Die Area**  | **0.0637 mm²** (~0.25mm × 0.25mm) |
+| **Total On-Chip Cells** | **7,336 Total Cells** (2,691 Pure Logic Gates) |
+| **Routing Layer Limit** |  **Metal 4 (`met4`)** |
+| **Interlayer Vias** | **21,857 Microscopic Vias** |
 ---
 
 ## Timeline Summary Table

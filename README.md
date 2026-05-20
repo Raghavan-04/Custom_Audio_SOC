@@ -266,7 +266,8 @@ export PDK=sky130A
 
 ```
 The structural hardware geometry artifact will build at:
-<img width="1976" height="1340" alt="3" src="https://github.com/user-attachments/assets/f6fca4fd-0786-4acb-9587-d75e50571040" />
+<img width="1976" height="1340" alt="4" src="https://github.com/user-attachments/assets/b1bd72b6-7e3f-4625-a3e6-d7d25a59e36c" />
+
 
 
 

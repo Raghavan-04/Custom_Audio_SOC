@@ -184,6 +184,18 @@ In an unaccelerated integer implementation, multiplication math must be emulated
 
 ---
 
+###  Power Distribution Network (PDN) Topography
+The chip's power grid was synthesized using a balanced mesh topology on the SkyWater 130nm standard cell library (`sky130_fd_sc_hd`). 
+
+<img width="1976" height="1340" alt="3" src="https://github.com/user-attachments/assets/11aadff3-bcdf-4c25-9929-1d027b3b382c" />
+
+
+* **Primary Vertical Straps:** Heavy metal tracks deployed at the periphery to provide high-current supply trunks and mitigate power electromigration.
+* **Horizontal Standard Cell Rails:** Uniformly pitched horizontal power rails crossing the core matrix to supply a stable 1.8V $V_{DD}$ (`vccd1`) and $GND$ (`vssd1`) reference plane directly to the underlying standard cells.
+* **Core Power Integrity:** The grid configuration safely bounds transient voltage drops (IR drop) across the hardware multiplier and high-speed AXI interconnect logic paths.
+
+---
+
 ## Getting Started
 
 ### Prerequisites

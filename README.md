@@ -266,7 +266,8 @@ export PDK=sky130A
 
 ```
 The structural hardware geometry artifact will build at:
-<img width="1976" height="1340" alt="4" src="https://github.com/user-attachments/assets/b1bd72b6-7e3f-4625-a3e6-d7d25a59e36c" />
+\
+![Final GDSII Silicon Layout View](https://github.com/user-attachments/assets/b1bd72b6-7e3f-4625-a3e6-d7d25a59e36c)
 
 
 

@@ -1,0 +1,27 @@
+
+65. Printing statistics.
+
+=== audio_soc_top ===
+
+   Number of wires:               3278
+   Number of wire bits:           3933
+   Number of public wires:          28
+   Number of public wire bits:     669
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               3895
+     $_ANDNOT_                     586
+     $_AND_                         26
+     $_MUX_                       1476
+     $_NAND_                        50
+     $_NOR_                         95
+     $_NOT_                        528
+     $_ORNOT_                      107
+     $_OR_                         279
+     $_XNOR_                        42
+     $_XOR_                        131
+     sky130_fd_sc_hd__dfrtp_2       91
+     sky130_fd_sc_hd__dfstp_2        4
+     sky130_fd_sc_hd__dfxtp_2      480
+

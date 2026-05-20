@@ -1,0 +1,13 @@
+
+72. Executing CHECK pass (checking for obvious problems).
+Checking module audio_soc_top...
+Warning: Wire audio_soc_top.\gpio_pins [7] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [6] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [5] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [4] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [3] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [2] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [1] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [0] is used but has no driver.
+Warning: Wire audio_soc_top.\audio_out is used but has no driver.
+Found and reported 9 problems.

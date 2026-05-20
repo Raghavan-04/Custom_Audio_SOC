@@ -1,0 +1,12 @@
+Warning: Replacing memory \ram with list of registers. See /openlane/designs/audio_soc/src/data_sram_axi.sv:50
+ABC: Warning: Detected 2 multi-output gates (for example, "sky130_fd_sc_hd__fa_1").
+Warning: Wire audio_soc_top.\gpio_pins [7] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [6] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [5] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [4] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [3] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [2] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [1] is used but has no driver.
+Warning: Wire audio_soc_top.\gpio_pins [0] is used but has no driver.
+Warning: Wire audio_soc_top.\audio_out is used but has no driver.
+Warnings: 10 unique messages, 10 total

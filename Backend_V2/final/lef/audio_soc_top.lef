@@ -1,0 +1,182 @@
+VERSION 5.7 ;
+  NOWIREEXTENSIONATPIN ON ;
+  DIVIDERCHAR "/" ;
+  BUSBITCHARS "[]" ;
+MACRO audio_soc_top
+  CLASS BLOCK ;
+  FOREIGN audio_soc_top ;
+  ORIGIN 0.000 0.000 ;
+  SIZE 247.145 BY 257.865 ;
+  PIN audio_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    ANTENNADIFFAREA 0.795200 ;
+    PORT
+      LAYER met3 ;
+        RECT 0.000 187.040 4.000 187.640 ;
+    END
+  END audio_out
+  PIN clk
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    ANTENNAGATEAREA 0.852000 ;
+    PORT
+      LAYER met3 ;
+        RECT 243.145 20.440 247.145 21.040 ;
+    END
+  END clk
+  PIN gpio_pins[0]
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    ANTENNADIFFAREA 0.795200 ;
+    PORT
+      LAYER met2 ;
+        RECT 0.090 0.000 0.370 4.000 ;
+    END
+  END gpio_pins[0]
+  PIN gpio_pins[1]
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    ANTENNADIFFAREA 0.795200 ;
+    PORT
+      LAYER met2 ;
+        RECT 202.950 253.865 203.230 257.865 ;
+    END
+  END gpio_pins[1]
+  PIN gpio_pins[2]
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    ANTENNADIFFAREA 0.795200 ;
+    PORT
+      LAYER met2 ;
+        RECT 177.190 0.000 177.470 4.000 ;
+    END
+  END gpio_pins[2]
+  PIN gpio_pins[3]
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    ANTENNADIFFAREA 0.795200 ;
+    PORT
+      LAYER met3 ;
+        RECT 0.000 91.840 4.000 92.440 ;
+    END
+  END gpio_pins[3]
+  PIN gpio_pins[4]
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    ANTENNADIFFAREA 0.445500 ;
+    PORT
+      LAYER met3 ;
+        RECT 243.145 210.840 247.145 211.440 ;
+    END
+  END gpio_pins[4]
+  PIN gpio_pins[5]
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    ANTENNADIFFAREA 0.795200 ;
+    PORT
+      LAYER met2 ;
+        RECT 87.030 0.000 87.310 4.000 ;
+    END
+  END gpio_pins[5]
+  PIN gpio_pins[6]
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    ANTENNADIFFAREA 0.795200 ;
+    PORT
+      LAYER met2 ;
+        RECT 22.630 253.865 22.910 257.865 ;
+    END
+  END gpio_pins[6]
+  PIN gpio_pins[7]
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    ANTENNADIFFAREA 0.795200 ;
+    PORT
+      LAYER met2 ;
+        RECT 112.790 253.865 113.070 257.865 ;
+    END
+  END gpio_pins[7]
+  PIN rst_n
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    ANTENNAGATEAREA 0.196500 ;
+    PORT
+      LAYER met3 ;
+        RECT 243.145 115.640 247.145 116.240 ;
+    END
+  END rst_n
+  PIN vccd1
+    DIRECTION INOUT ;
+    USE POWER ;
+    PORT
+      LAYER met4 ;
+        RECT 14.020 10.640 17.020 245.040 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 174.020 10.640 177.020 245.040 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 19.380 241.740 22.380 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 179.380 241.740 182.380 ;
+    END
+  END vccd1
+  PIN vssd1
+    DIRECTION INOUT ;
+    USE GROUND ;
+    PORT
+      LAYER met4 ;
+        RECT 18.720 10.640 21.720 245.040 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 178.720 10.640 181.720 245.040 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 24.080 241.740 27.080 ;
+    END
+    PORT
+      LAYER met5 ;
+        RECT 5.280 184.080 241.740 187.080 ;
+    END
+  END vssd1
+  OBS
+      LAYER li1 ;
+        RECT 5.520 10.795 241.500 244.885 ;
+      LAYER met1 ;
+        RECT 0.070 10.640 241.800 245.040 ;
+      LAYER met2 ;
+        RECT 0.100 253.585 22.350 253.865 ;
+        RECT 23.190 253.585 112.510 253.865 ;
+        RECT 113.350 253.585 202.670 253.865 ;
+        RECT 203.510 253.585 241.410 253.865 ;
+        RECT 0.100 4.280 241.410 253.585 ;
+        RECT 0.650 4.000 86.750 4.280 ;
+        RECT 87.590 4.000 176.910 4.280 ;
+        RECT 177.750 4.000 241.410 4.280 ;
+      LAYER met3 ;
+        RECT 4.000 211.840 243.145 244.965 ;
+        RECT 4.000 210.440 242.745 211.840 ;
+        RECT 4.000 188.040 243.145 210.440 ;
+        RECT 4.400 186.640 243.145 188.040 ;
+        RECT 4.000 116.640 243.145 186.640 ;
+        RECT 4.000 115.240 242.745 116.640 ;
+        RECT 4.000 92.840 243.145 115.240 ;
+        RECT 4.400 91.440 243.145 92.840 ;
+        RECT 4.000 21.440 243.145 91.440 ;
+        RECT 4.000 20.040 242.745 21.440 ;
+        RECT 4.000 10.715 243.145 20.040 ;
+      LAYER met4 ;
+        RECT 35.255 11.735 173.620 235.105 ;
+        RECT 177.420 11.735 178.320 235.105 ;
+        RECT 182.120 11.735 204.865 235.105 ;
+  END
+END audio_soc_top
+END LIBRARY
+

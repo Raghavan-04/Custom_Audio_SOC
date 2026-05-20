@@ -142,7 +142,7 @@ INSTRUCTION MEMORY (0x0000)
 | **Routing Layer Limit** |  **Metal 4 (`met4`)** |
 | **Interlayer Vias** | **21,857 Microscopic Vias** |
 
-## ⚡ Realized Power Distribution Network (PDN) Mesh
+##  Realized Power Distribution Network (PDN) Mesh
 The physical implementation enforces strict power integrity across the core area to prevent dynamic IR-drop noise during high-frequency audio synthesis:
 * **Vertical Power Trunks:** Thick, low-resistance macro-straps implemented on Metal 4 (`met4`) supply steady power lanes down the periphery of the core.
 * **Horizontal Standard Cell Rails:** Uniformly pitched tracks on Metal 1/2 crossing standard cell rows at a 160µm pitch, clamping every flip-flop to a stable 1.8V $V_{DD}$ (`vccd1`) and $GND$ (`vssd1`) reference grid.

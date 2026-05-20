@@ -156,7 +156,7 @@ The compiled silicon comfortably fulfills your 50.0 MHz (20.0 ns period) timing 
 ### Real-World Critical Path Profiling
 The system's longest electrical path originates at the Program Counter register, runs through the Instruction Memory cell lookups (`u_imem`), vectors through the Hardware Multiplier logic array, and settles safely at destination register `_4800_/D` in only **6.45 ns**—well below the 20.43 ns data required limit.
 
-## 🛡️ Physical Design Sign-Off & Manufacturability
+##  Physical Design Sign-Off & Manufacturability
 Verified using industry-standard EDA tools inside the OpenLane compiler pipeline:
 * **Magic & KLayout DRC:** **0 Violations**. Geometries completely conform to fabrication rule space clearances.
 * **Layout vs. Schematic (LVS):** **0 Errors (Passed)**. The physical layout perfectly mirrors the electrical schematic wire-for-wire across all **3,314 independent nets**.

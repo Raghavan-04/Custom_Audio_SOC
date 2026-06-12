@@ -211,7 +211,7 @@ The power grid infrastructure was built with high integrity to suppress dynamic 
 
 ---
 
-## ⏱️ Static Timing Analysis (STA) Sign-Off
+##  Static Timing Analysis (STA) Sign-Off
 
 Timing simulation profiles evaluated under the **Typical Process Corner** confirm robust timing margin boundaries at a clock target of **50.0 MHz** (20.0 ns clock period).
 

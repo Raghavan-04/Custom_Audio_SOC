@@ -237,7 +237,7 @@ Timing Margin: Required 20.43ns - Arrived 6.45ns = +13.98ns Safe Margin
 
 ---
 
-## 🛡️ Fabrication & Manufacturability Sign-Off
+##  Fabrication & Manufacturability Sign-Off
 
 Verified using industry-standard EDA tools inside the OpenLane pipeline container toolchain:
 

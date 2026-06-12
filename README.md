@@ -202,7 +202,7 @@ The macro-level metrics extracted from the final sign-off manufacturing manifest
 
 ---
 
-## ⚡ Power Distribution Network (PDN) Topology
+##  Power Distribution Network (PDN) Topology
 
 The power grid infrastructure was built with high integrity to suppress dynamic IR voltage drops during high-frequency audio PWM generation.
 

@@ -184,7 +184,7 @@ In an unaccelerated integer implementation, multiplication math must be emulated
 
 ---
 
-## 🛠️ Tape-Out & Physical Implementation Metrics
+##  Tape-Out & Physical Implementation Metrics
 
 The macro-level metrics extracted from the final sign-off manufacturing manifest (`metrics.csv`) highlight the physical density constraints of the layout:
 

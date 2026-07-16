@@ -171,7 +171,7 @@ Verified using industry-standard EDA tools inside the OpenLane compiler pipeline
 | **Phase 1.1** | Fast Math | Hardware Multiplier (RV32M) | ✅ Completed |
 | **Phase 1.2** | Precise Timing | Timer Interrupt (22µs IRQ) | ✅ Completed |
 | **Phase 1.3** | Scalable Bus | AXI4-Lite Router Matrix | ✅ Completed |
-| **Phase 1.4** | Low-Power Config | AXI-to-APB Bridge | ✅ Complete |
+| **Phase 1.4** | Low-Power Config | AXI-to-APB Bridge | ✅ Completed |
 | **Phase 1.5** | Peripheral Suite | Timer APB + GPIO APB | ✅ Complete |
 | **Phase 1.6** | Wavetable Ready | 1KB AXI Data SRAM | ✅ Complete |
 | **Phase 2.0** | Integration | Full System Verification | ✅ Complete |

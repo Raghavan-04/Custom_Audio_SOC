@@ -168,7 +168,7 @@ Verified using industry-standard EDA tools inside the OpenLane compiler pipeline
 | Phase | Goal | Key Addition | Status |
 | --- | --- | --- | --- |
 | **Phase 0** | Basic CPU | RV32I Single-Cycle Core | ✅ Completed |
-| **Phase 1.1** | Fast Math | Hardware Multiplier (RV32M) | ✅ Complete |
+| **Phase 1.1** | Fast Math | Hardware Multiplier (RV32M) | ✅ Completed |
 | **Phase 1.2** | Precise Timing | Timer Interrupt (22µs IRQ) | ✅ Complete |
 | **Phase 1.3** | Scalable Bus | AXI4-Lite Router Matrix | ✅ Complete |
 | **Phase 1.4** | Low-Power Config | AXI-to-APB Bridge | ✅ Complete |
